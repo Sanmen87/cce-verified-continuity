@@ -1,0 +1,1117 @@
+{
+  "publication": "DERIVED_PUBLIC_VIEW_NOT_ORIGINAL_BYTES",
+  "sourceId": "source-3",
+  "status": "COMPLETED",
+  "finishedAt": "2026-11-11T14:50:17.615Z",
+  "modelRequested": "gpt-6.1-sol",
+  "modelResolved": "UNKNOWN",
+  "results": [
+    {
+      "id": "r1-known-path-baseline",
+      "scenario": "known-path",
+      "repetition": 1,
+      "arm": "baseline",
+      "durationMs": 18718,
+      "checks": {
+        "shape": true,
+        "definition": true,
+        "callers": false,
+        "cases": true
+      },
+      "correct": false,
+      "usage": {
+        "source": "codex-cli",
+        "available": true,
+        "raw": {
+          "input_tokens": 59133,
+          "cached_input_tokens": 45696,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 268,
+          "reasoning_output_tokens": 8
+        },
+        "input": 59133,
+        "cachedInput": 45696,
+        "nonCachedInput": 13437,
+        "output": 268,
+        "modelRequests": null
+      },
+      "toolCounts": {
+        "workspace_read_file": 7,
+        "workspace_list_files": 1
+      },
+      "cceCalls": 0,
+      "toolErrors": 0,
+      "staleSha": 0,
+      "taskSuccess": false,
+      "answer": {
+        "definition": "src/domain/rules.ts:canWaiveDeliveryFee",
+        "callers": [
+          "src/checkout/preview.ts:previewOrder",
+          "src/checkout/quote.ts:quoteOrder"
+        ],
+        "cases": [
+          false,
+          true,
+          false,
+          false
+        ]
+      },
+      "evidenceAllRequired": true,
+      "bodies": [
+        {
+          "source": {
+            "path": "src/domain/rules.ts",
+            "startLine": 1,
+            "endLine": 6,
+            "sha256": "aa117cb0f7955fa9d29d09c6397c80a501821cf3389eb7c522b3b7628a0fe986"
+          },
+          "text": "export interface Customer { active: boolean; level: 'gold' | 'silver' }\n/** Current delivery fee waiver policy. */\nexport function canWaiveDeliveryFee(customer: Customer, totalCents: number): boolean {\n  return customer.active && customer.level === 'gold' && totalCents >= 5000;\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/catalog/products.ts",
+            "startLine": 1,
+            "endLine": 2,
+            "sha256": "c7f49294a6c865324499ea8a1985d138a8c4d802425965f79c2627fbf1ec92da"
+          },
+          "text": "export const products = [{id: 1, priceCents: 2700}];\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/preview.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "943b46b9154b5b9aea545167c064f9eacefd3268e970dee9bc62ac505c5c58aa"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function previewOrder(customer: Customer, totalCents: number) {\n  return {freeDelivery: canWaiveDeliveryFee(customer, totalCents)};\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/taxes.ts",
+            "startLine": 1,
+            "endLine": 2,
+            "sha256": "a1ddd959394258c544d1af23856982a6b3a9f36edd889dec690ad26fdda825e5"
+          },
+          "text": "export function taxes(cents: number) { return Math.floor(cents / 5); }\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/quote.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "fa558d5a5a55f55d2bfa4c622ca4436d2958bd4bc788b8a6655bfe85303c54a2"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function quoteOrder(customer: Customer, totalCents: number) {\n  return {deliveryCents: canWaiveDeliveryFee(customer, totalCents) ? 0 : 700};\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/legacy/rules.ts",
+            "startLine": 1,
+            "endLine": 3,
+            "sha256": "515edb1c0f69d25320ef521c08f66c3a3cbc0c1989cf4afef21a43bf3dbe2463"
+          },
+          "text": "/** Historical policy; not the active checkout policy. */\nexport function canWaiveDeliveryFee(active: boolean) { return active; }\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/users/profile.ts",
+            "startLine": 1,
+            "endLine": 2,
+            "sha256": "7eb312d23104acd9ca7fdaf6772ff7725b641c5fa160072620079f79960025cc"
+          },
+          "text": "export function displayName(name: string) { return name.trim(); }\n",
+          "representation": "FULL_FILE"
+        }
+      ]
+    },
+    {
+      "id": "r1-known-path-cce",
+      "scenario": "known-path",
+      "repetition": 1,
+      "arm": "cce",
+      "durationMs": 17809,
+      "checks": {
+        "shape": true,
+        "definition": true,
+        "callers": false,
+        "cases": true
+      },
+      "correct": false,
+      "usage": {
+        "source": "codex-cli",
+        "available": true,
+        "raw": {
+          "input_tokens": 59563,
+          "cached_input_tokens": 43264,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 213,
+          "reasoning_output_tokens": 0
+        },
+        "input": 59563,
+        "cachedInput": 43264,
+        "nonCachedInput": 16299,
+        "output": 213,
+        "modelRequests": null
+      },
+      "toolCounts": {
+        "workspace_read_file": 3,
+        "cce_search": 1
+      },
+      "cceCalls": 1,
+      "toolErrors": 0,
+      "staleSha": 0,
+      "taskSuccess": false,
+      "answer": {
+        "definition": "src/domain/rules.ts:canWaiveDeliveryFee",
+        "callers": [
+          "src/checkout/preview.ts:previewOrder",
+          "src/checkout/quote.ts:quoteOrder"
+        ],
+        "cases": [
+          false,
+          true,
+          false,
+          false
+        ]
+      },
+      "evidenceAllRequired": true,
+      "bodies": [
+        {
+          "source": {
+            "path": "src/domain/rules.ts",
+            "startLine": 1,
+            "endLine": 6,
+            "sha256": "aa117cb0f7955fa9d29d09c6397c80a501821cf3389eb7c522b3b7628a0fe986"
+          },
+          "text": "export interface Customer { active: boolean; level: 'gold' | 'silver' }\n/** Current delivery fee waiver policy. */\nexport function canWaiveDeliveryFee(customer: Customer, totalCents: number): boolean {\n  return customer.active && customer.level === 'gold' && totalCents >= 5000;\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/preview.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "943b46b9154b5b9aea545167c064f9eacefd3268e970dee9bc62ac505c5c58aa"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function previewOrder(customer: Customer, totalCents: number) {\n  return {freeDelivery: canWaiveDeliveryFee(customer, totalCents)};\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/quote.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "fa558d5a5a55f55d2bfa4c622ca4436d2958bd4bc788b8a6655bfe85303c54a2"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function quoteOrder(customer: Customer, totalCents: number) {\n  return {deliveryCents: canWaiveDeliveryFee(customer, totalCents) ? 0 : 700};\n}\n",
+          "representation": "FULL_FILE"
+        }
+      ]
+    },
+    {
+      "id": "r1-unknown-definition-baseline",
+      "scenario": "unknown-definition",
+      "repetition": 1,
+      "arm": "baseline",
+      "durationMs": 20530,
+      "checks": {
+        "shape": true,
+        "definition": true,
+        "callers": true,
+        "cases": true
+      },
+      "correct": true,
+      "usage": {
+        "source": "codex-cli",
+        "available": true,
+        "raw": {
+          "input_tokens": 62923,
+          "cached_input_tokens": 56704,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 212,
+          "reasoning_output_tokens": 8
+        },
+        "input": 62923,
+        "cachedInput": 56704,
+        "nonCachedInput": 6219,
+        "output": 212,
+        "modelRequests": null
+      },
+      "toolCounts": {
+        "workspace_list_files": 1,
+        "workspace_read_file": 7
+      },
+      "cceCalls": 0,
+      "toolErrors": 0,
+      "staleSha": 0,
+      "taskSuccess": true,
+      "answer": {
+        "definition": "src/domain/rules.ts:canWaiveDeliveryFee",
+        "callers": [
+          "src/checkout/preview.ts:previewOrder",
+          "src/checkout/quote.ts:quoteOrder"
+        ],
+        "cases": [
+          false,
+          true,
+          false,
+          false
+        ]
+      },
+      "evidenceAllRequired": true,
+      "bodies": [
+        {
+          "source": {
+            "path": "src/checkout/preview.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "943b46b9154b5b9aea545167c064f9eacefd3268e970dee9bc62ac505c5c58aa"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function previewOrder(customer: Customer, totalCents: number) {\n  return {freeDelivery: canWaiveDeliveryFee(customer, totalCents)};\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/domain/rules.ts",
+            "startLine": 1,
+            "endLine": 6,
+            "sha256": "aa117cb0f7955fa9d29d09c6397c80a501821cf3389eb7c522b3b7628a0fe986"
+          },
+          "text": "export interface Customer { active: boolean; level: 'gold' | 'silver' }\n/** Current delivery fee waiver policy. */\nexport function canWaiveDeliveryFee(customer: Customer, totalCents: number): boolean {\n  return customer.active && customer.level === 'gold' && totalCents >= 5000;\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/users/profile.ts",
+            "startLine": 1,
+            "endLine": 2,
+            "sha256": "7eb312d23104acd9ca7fdaf6772ff7725b641c5fa160072620079f79960025cc"
+          },
+          "text": "export function displayName(name: string) { return name.trim(); }\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "README.md",
+            "startLine": 1,
+            "endLine": 2,
+            "sha256": "0ff03374e40a595ca2a29c26d6f58bde5ff26c0f5c822054fa2ab62ffad05a02"
+          },
+          "text": "Public read-only fixture. Current checkout modules use src/domain/rules.ts; src/legacy is historical. No dependencies, installation or code execution are needed.\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/taxes.ts",
+            "startLine": 1,
+            "endLine": 2,
+            "sha256": "a1ddd959394258c544d1af23856982a6b3a9f36edd889dec690ad26fdda825e5"
+          },
+          "text": "export function taxes(cents: number) { return Math.floor(cents / 5); }\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/quote.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "fa558d5a5a55f55d2bfa4c622ca4436d2958bd4bc788b8a6655bfe85303c54a2"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function quoteOrder(customer: Customer, totalCents: number) {\n  return {deliveryCents: canWaiveDeliveryFee(customer, totalCents) ? 0 : 700};\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/catalog/products.ts",
+            "startLine": 1,
+            "endLine": 2,
+            "sha256": "c7f49294a6c865324499ea8a1985d138a8c4d802425965f79c2627fbf1ec92da"
+          },
+          "text": "export const products = [{id: 1, priceCents: 2700}];\n",
+          "representation": "FULL_FILE"
+        }
+      ]
+    },
+    {
+      "id": "r1-unknown-definition-cce",
+      "scenario": "unknown-definition",
+      "repetition": 1,
+      "arm": "cce",
+      "durationMs": 21766,
+      "checks": {
+        "shape": true,
+        "definition": true,
+        "callers": true,
+        "cases": true
+      },
+      "correct": true,
+      "usage": {
+        "source": "codex-cli",
+        "available": true,
+        "raw": {
+          "input_tokens": 72964,
+          "cached_input_tokens": 63616,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 438,
+          "reasoning_output_tokens": 13
+        },
+        "input": 72964,
+        "cachedInput": 63616,
+        "nonCachedInput": 9348,
+        "output": 438,
+        "modelRequests": null
+      },
+      "toolCounts": {
+        "cce_search": 2,
+        "cce_expand": 3,
+        "workspace_list_files": 1,
+        "workspace_read_file": 3
+      },
+      "cceCalls": 5,
+      "toolErrors": 0,
+      "staleSha": 0,
+      "taskSuccess": true,
+      "answer": {
+        "definition": "src/domain/rules.ts:canWaiveDeliveryFee",
+        "callers": [
+          "src/checkout/preview.ts:previewOrder",
+          "src/checkout/quote.ts:quoteOrder"
+        ],
+        "cases": [
+          false,
+          true,
+          false,
+          false
+        ]
+      },
+      "evidenceAllRequired": true,
+      "bodies": [
+        {
+          "source": {
+            "path": "src/domain/rules.ts",
+            "startLine": 1,
+            "endLine": 6,
+            "sha256": "aa117cb0f7955fa9d29d09c6397c80a501821cf3389eb7c522b3b7628a0fe986"
+          },
+          "text": "export interface Customer { active: boolean; level: 'gold' | 'silver' }\n/** Current delivery fee waiver policy. */\nexport function canWaiveDeliveryFee(customer: Customer, totalCents: number): boolean {\n  return customer.active && customer.level === 'gold' && totalCents >= 5000;\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/quote.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "fa558d5a5a55f55d2bfa4c622ca4436d2958bd4bc788b8a6655bfe85303c54a2"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function quoteOrder(customer: Customer, totalCents: number) {\n  return {deliveryCents: canWaiveDeliveryFee(customer, totalCents) ? 0 : 700};\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/users/profile.ts",
+            "startLine": 1,
+            "endLine": 2,
+            "sha256": "7eb312d23104acd9ca7fdaf6772ff7725b641c5fa160072620079f79960025cc"
+          },
+          "text": "export function displayName(name: string) { return name.trim(); }\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/catalog/products.ts",
+            "startLine": 1,
+            "endLine": 2,
+            "sha256": "c7f49294a6c865324499ea8a1985d138a8c4d802425965f79c2627fbf1ec92da"
+          },
+          "text": "export const products = [{id: 1, priceCents: 2700}];\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/taxes.ts",
+            "startLine": 1,
+            "endLine": 2,
+            "sha256": "a1ddd959394258c544d1af23856982a6b3a9f36edd889dec690ad26fdda825e5"
+          },
+          "text": "export function taxes(cents: number) { return Math.floor(cents / 5); }\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/preview.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "943b46b9154b5b9aea545167c064f9eacefd3268e970dee9bc62ac505c5c58aa"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function previewOrder(customer: Customer, totalCents: number) {\n  return {freeDelivery: canWaiveDeliveryFee(customer, totalCents)};\n}\n",
+          "representation": "FULL_FILE"
+        }
+      ]
+    },
+    {
+      "id": "r1-historical-decoy-baseline",
+      "scenario": "historical-decoy",
+      "repetition": 1,
+      "arm": "baseline",
+      "durationMs": 23099,
+      "checks": {
+        "shape": true,
+        "definition": true,
+        "callers": true,
+        "cases": true
+      },
+      "correct": true,
+      "usage": {
+        "source": "codex-cli",
+        "available": true,
+        "raw": {
+          "input_tokens": 57009,
+          "cached_input_tokens": 46080,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 181,
+          "reasoning_output_tokens": 0
+        },
+        "input": 57009,
+        "cachedInput": 46080,
+        "nonCachedInput": 10929,
+        "output": 181,
+        "modelRequests": null
+      },
+      "toolCounts": {
+        "workspace_list_files": 1,
+        "workspace_read_file": 3
+      },
+      "cceCalls": 0,
+      "toolErrors": 0,
+      "staleSha": 0,
+      "taskSuccess": true,
+      "answer": {
+        "definition": "src/domain/rules.ts:canWaiveDeliveryFee",
+        "callers": [
+          "src/checkout/quote.ts:quoteOrder"
+        ],
+        "cases": [
+          false,
+          true
+        ]
+      },
+      "evidenceAllRequired": true,
+      "bodies": [
+        {
+          "source": {
+            "path": "src/legacy/rules.ts",
+            "startLine": 1,
+            "endLine": 3,
+            "sha256": "515edb1c0f69d25320ef521c08f66c3a3cbc0c1989cf4afef21a43bf3dbe2463"
+          },
+          "text": "/** Historical policy; not the active checkout policy. */\nexport function canWaiveDeliveryFee(active: boolean) { return active; }\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/quote.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "fa558d5a5a55f55d2bfa4c622ca4436d2958bd4bc788b8a6655bfe85303c54a2"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function quoteOrder(customer: Customer, totalCents: number) {\n  return {deliveryCents: canWaiveDeliveryFee(customer, totalCents) ? 0 : 700};\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/domain/rules.ts",
+            "startLine": 1,
+            "endLine": 6,
+            "sha256": "aa117cb0f7955fa9d29d09c6397c80a501821cf3389eb7c522b3b7628a0fe986"
+          },
+          "text": "export interface Customer { active: boolean; level: 'gold' | 'silver' }\n/** Current delivery fee waiver policy. */\nexport function canWaiveDeliveryFee(customer: Customer, totalCents: number): boolean {\n  return customer.active && customer.level === 'gold' && totalCents >= 5000;\n}\n",
+          "representation": "FULL_FILE"
+        }
+      ]
+    },
+    {
+      "id": "r1-historical-decoy-cce",
+      "scenario": "historical-decoy",
+      "repetition": 1,
+      "arm": "cce",
+      "durationMs": 17842,
+      "checks": {
+        "shape": true,
+        "definition": true,
+        "callers": true,
+        "cases": true
+      },
+      "correct": true,
+      "usage": {
+        "source": "codex-cli",
+        "available": true,
+        "raw": {
+          "input_tokens": 49262,
+          "cached_input_tokens": 44160,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 272,
+          "reasoning_output_tokens": 12
+        },
+        "input": 49262,
+        "cachedInput": 44160,
+        "nonCachedInput": 5102,
+        "output": 272,
+        "modelRequests": null
+      },
+      "toolCounts": {
+        "cce_search": 1,
+        "cce_expand": 2
+      },
+      "cceCalls": 3,
+      "toolErrors": 0,
+      "staleSha": 0,
+      "taskSuccess": true,
+      "answer": {
+        "definition": "src/domain/rules.ts:canWaiveDeliveryFee",
+        "callers": [
+          "src/checkout/quote.ts:quoteOrder"
+        ],
+        "cases": [
+          false,
+          true
+        ]
+      },
+      "evidenceAllRequired": true,
+      "bodies": [
+        {
+          "source": {
+            "path": "src/domain/rules.ts",
+            "startLine": 1,
+            "endLine": 6,
+            "sha256": "aa117cb0f7955fa9d29d09c6397c80a501821cf3389eb7c522b3b7628a0fe986"
+          },
+          "text": "export interface Customer { active: boolean; level: 'gold' | 'silver' }\n/** Current delivery fee waiver policy. */\nexport function canWaiveDeliveryFee(customer: Customer, totalCents: number): boolean {\n  return customer.active && customer.level === 'gold' && totalCents >= 5000;\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/quote.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "fa558d5a5a55f55d2bfa4c622ca4436d2958bd4bc788b8a6655bfe85303c54a2"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function quoteOrder(customer: Customer, totalCents: number) {\n  return {deliveryCents: canWaiveDeliveryFee(customer, totalCents) ? 0 : 700};\n}\n",
+          "representation": "FULL_FILE"
+        }
+      ]
+    },
+    {
+      "id": "r2-historical-decoy-cce",
+      "scenario": "historical-decoy",
+      "repetition": 2,
+      "arm": "cce",
+      "durationMs": 21746,
+      "checks": {
+        "shape": true,
+        "definition": true,
+        "callers": true,
+        "cases": true
+      },
+      "correct": true,
+      "usage": {
+        "source": "codex-cli",
+        "available": true,
+        "raw": {
+          "input_tokens": 54197,
+          "cached_input_tokens": 47488,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 290,
+          "reasoning_output_tokens": 8
+        },
+        "input": 54197,
+        "cachedInput": 47488,
+        "nonCachedInput": 6709,
+        "output": 290,
+        "modelRequests": null
+      },
+      "toolCounts": {
+        "cce_search": 1,
+        "cce_expand": 2
+      },
+      "cceCalls": 3,
+      "toolErrors": 0,
+      "staleSha": 0,
+      "taskSuccess": true,
+      "answer": {
+        "definition": "src/domain/rules.ts:canWaiveDeliveryFee",
+        "callers": [
+          "src/checkout/quote.ts:quoteOrder"
+        ],
+        "cases": [
+          false,
+          true
+        ]
+      },
+      "evidenceAllRequired": true,
+      "bodies": [
+        {
+          "source": {
+            "path": "src/checkout/quote.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "fa558d5a5a55f55d2bfa4c622ca4436d2958bd4bc788b8a6655bfe85303c54a2"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function quoteOrder(customer: Customer, totalCents: number) {\n  return {deliveryCents: canWaiveDeliveryFee(customer, totalCents) ? 0 : 700};\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/domain/rules.ts",
+            "startLine": 1,
+            "endLine": 6,
+            "sha256": "aa117cb0f7955fa9d29d09c6397c80a501821cf3389eb7c522b3b7628a0fe986"
+          },
+          "text": "export interface Customer { active: boolean; level: 'gold' | 'silver' }\n/** Current delivery fee waiver policy. */\nexport function canWaiveDeliveryFee(customer: Customer, totalCents: number): boolean {\n  return customer.active && customer.level === 'gold' && totalCents >= 5000;\n}\n",
+          "representation": "FULL_FILE"
+        }
+      ]
+    },
+    {
+      "id": "r2-historical-decoy-baseline",
+      "scenario": "historical-decoy",
+      "repetition": 2,
+      "arm": "baseline",
+      "durationMs": 16120,
+      "checks": {
+        "shape": true,
+        "definition": true,
+        "callers": true,
+        "cases": true
+      },
+      "correct": true,
+      "usage": {
+        "source": "codex-cli",
+        "available": true,
+        "raw": {
+          "input_tokens": 58613,
+          "cached_input_tokens": 40064,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 187,
+          "reasoning_output_tokens": 0
+        },
+        "input": 58613,
+        "cachedInput": 40064,
+        "nonCachedInput": 18549,
+        "output": 187,
+        "modelRequests": null
+      },
+      "toolCounts": {
+        "workspace_list_files": 1,
+        "workspace_read_file": 3
+      },
+      "cceCalls": 0,
+      "toolErrors": 0,
+      "staleSha": 0,
+      "taskSuccess": true,
+      "answer": {
+        "definition": "src/domain/rules.ts:canWaiveDeliveryFee",
+        "callers": [
+          "src/checkout/quote.ts:quoteOrder"
+        ],
+        "cases": [
+          false,
+          true
+        ]
+      },
+      "evidenceAllRequired": true,
+      "bodies": [
+        {
+          "source": {
+            "path": "src/domain/rules.ts",
+            "startLine": 1,
+            "endLine": 6,
+            "sha256": "aa117cb0f7955fa9d29d09c6397c80a501821cf3389eb7c522b3b7628a0fe986"
+          },
+          "text": "export interface Customer { active: boolean; level: 'gold' | 'silver' }\n/** Current delivery fee waiver policy. */\nexport function canWaiveDeliveryFee(customer: Customer, totalCents: number): boolean {\n  return customer.active && customer.level === 'gold' && totalCents >= 5000;\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/quote.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "fa558d5a5a55f55d2bfa4c622ca4436d2958bd4bc788b8a6655bfe85303c54a2"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function quoteOrder(customer: Customer, totalCents: number) {\n  return {deliveryCents: canWaiveDeliveryFee(customer, totalCents) ? 0 : 700};\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/legacy/rules.ts",
+            "startLine": 1,
+            "endLine": 3,
+            "sha256": "515edb1c0f69d25320ef521c08f66c3a3cbc0c1989cf4afef21a43bf3dbe2463"
+          },
+          "text": "/** Historical policy; not the active checkout policy. */\nexport function canWaiveDeliveryFee(active: boolean) { return active; }\n",
+          "representation": "FULL_FILE"
+        }
+      ]
+    },
+    {
+      "id": "r2-unknown-definition-cce",
+      "scenario": "unknown-definition",
+      "repetition": 2,
+      "arm": "cce",
+      "durationMs": 19493,
+      "checks": {
+        "shape": true,
+        "definition": true,
+        "callers": true,
+        "cases": true
+      },
+      "correct": true,
+      "usage": {
+        "source": "codex-cli",
+        "available": true,
+        "raw": {
+          "input_tokens": 52402,
+          "cached_input_tokens": 33280,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 349,
+          "reasoning_output_tokens": 0
+        },
+        "input": 52402,
+        "cachedInput": 33280,
+        "nonCachedInput": 19122,
+        "output": 349,
+        "modelRequests": null
+      },
+      "toolCounts": {
+        "cce_search": 2,
+        "cce_expand": 3
+      },
+      "cceCalls": 5,
+      "toolErrors": 0,
+      "staleSha": 0,
+      "taskSuccess": true,
+      "answer": {
+        "definition": "src/domain/rules.ts:canWaiveDeliveryFee",
+        "callers": [
+          "src/checkout/preview.ts:previewOrder",
+          "src/checkout/quote.ts:quoteOrder"
+        ],
+        "cases": [
+          false,
+          true,
+          false,
+          false
+        ]
+      },
+      "evidenceAllRequired": true,
+      "bodies": [
+        {
+          "source": {
+            "path": "src/domain/rules.ts",
+            "startLine": 1,
+            "endLine": 6,
+            "sha256": "aa117cb0f7955fa9d29d09c6397c80a501821cf3389eb7c522b3b7628a0fe986"
+          },
+          "text": "export interface Customer { active: boolean; level: 'gold' | 'silver' }\n/** Current delivery fee waiver policy. */\nexport function canWaiveDeliveryFee(customer: Customer, totalCents: number): boolean {\n  return customer.active && customer.level === 'gold' && totalCents >= 5000;\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/quote.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "fa558d5a5a55f55d2bfa4c622ca4436d2958bd4bc788b8a6655bfe85303c54a2"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function quoteOrder(customer: Customer, totalCents: number) {\n  return {deliveryCents: canWaiveDeliveryFee(customer, totalCents) ? 0 : 700};\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/preview.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "943b46b9154b5b9aea545167c064f9eacefd3268e970dee9bc62ac505c5c58aa"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function previewOrder(customer: Customer, totalCents: number) {\n  return {freeDelivery: canWaiveDeliveryFee(customer, totalCents)};\n}\n",
+          "representation": "FULL_FILE"
+        }
+      ]
+    },
+    {
+      "id": "r2-unknown-definition-baseline",
+      "scenario": "unknown-definition",
+      "repetition": 2,
+      "arm": "baseline",
+      "durationMs": 20153,
+      "checks": {
+        "shape": true,
+        "definition": true,
+        "callers": true,
+        "cases": true
+      },
+      "correct": true,
+      "usage": {
+        "source": "codex-cli",
+        "available": true,
+        "raw": {
+          "input_tokens": 62619,
+          "cached_input_tokens": 56576,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 228,
+          "reasoning_output_tokens": 9
+        },
+        "input": 62619,
+        "cachedInput": 56576,
+        "nonCachedInput": 6043,
+        "output": 228,
+        "modelRequests": null
+      },
+      "toolCounts": {
+        "workspace_list_files": 1,
+        "workspace_read_file": 7
+      },
+      "cceCalls": 0,
+      "toolErrors": 0,
+      "staleSha": 0,
+      "taskSuccess": true,
+      "answer": {
+        "definition": "src/domain/rules.ts:canWaiveDeliveryFee",
+        "callers": [
+          "src/checkout/preview.ts:previewOrder",
+          "src/checkout/quote.ts:quoteOrder"
+        ],
+        "cases": [
+          false,
+          true,
+          false,
+          false
+        ]
+      },
+      "evidenceAllRequired": true,
+      "bodies": [
+        {
+          "source": {
+            "path": "src/domain/rules.ts",
+            "startLine": 1,
+            "endLine": 6,
+            "sha256": "aa117cb0f7955fa9d29d09c6397c80a501821cf3389eb7c522b3b7628a0fe986"
+          },
+          "text": "export interface Customer { active: boolean; level: 'gold' | 'silver' }\n/** Current delivery fee waiver policy. */\nexport function canWaiveDeliveryFee(customer: Customer, totalCents: number): boolean {\n  return customer.active && customer.level === 'gold' && totalCents >= 5000;\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "README.md",
+            "startLine": 1,
+            "endLine": 2,
+            "sha256": "0ff03374e40a595ca2a29c26d6f58bde5ff26c0f5c822054fa2ab62ffad05a02"
+          },
+          "text": "Public read-only fixture. Current checkout modules use src/domain/rules.ts; src/legacy is historical. No dependencies, installation or code execution are needed.\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/users/profile.ts",
+            "startLine": 1,
+            "endLine": 2,
+            "sha256": "7eb312d23104acd9ca7fdaf6772ff7725b641c5fa160072620079f79960025cc"
+          },
+          "text": "export function displayName(name: string) { return name.trim(); }\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/catalog/products.ts",
+            "startLine": 1,
+            "endLine": 2,
+            "sha256": "c7f49294a6c865324499ea8a1985d138a8c4d802425965f79c2627fbf1ec92da"
+          },
+          "text": "export const products = [{id: 1, priceCents: 2700}];\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/taxes.ts",
+            "startLine": 1,
+            "endLine": 2,
+            "sha256": "a1ddd959394258c544d1af23856982a6b3a9f36edd889dec690ad26fdda825e5"
+          },
+          "text": "export function taxes(cents: number) { return Math.floor(cents / 5); }\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/preview.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "943b46b9154b5b9aea545167c064f9eacefd3268e970dee9bc62ac505c5c58aa"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function previewOrder(customer: Customer, totalCents: number) {\n  return {freeDelivery: canWaiveDeliveryFee(customer, totalCents)};\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/quote.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "fa558d5a5a55f55d2bfa4c622ca4436d2958bd4bc788b8a6655bfe85303c54a2"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function quoteOrder(customer: Customer, totalCents: number) {\n  return {deliveryCents: canWaiveDeliveryFee(customer, totalCents) ? 0 : 700};\n}\n",
+          "representation": "FULL_FILE"
+        }
+      ]
+    },
+    {
+      "id": "r2-known-path-cce",
+      "scenario": "known-path",
+      "repetition": 2,
+      "arm": "cce",
+      "durationMs": 24316,
+      "checks": {
+        "shape": true,
+        "definition": true,
+        "callers": false,
+        "cases": true
+      },
+      "correct": false,
+      "usage": {
+        "source": "codex-cli",
+        "available": true,
+        "raw": {
+          "input_tokens": 74626,
+          "cached_input_tokens": 66432,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 395,
+          "reasoning_output_tokens": 13
+        },
+        "input": 74626,
+        "cachedInput": 66432,
+        "nonCachedInput": 8194,
+        "output": 395,
+        "modelRequests": null
+      },
+      "toolCounts": {
+        "workspace_read_file": 1,
+        "cce_search": 1,
+        "cce_expand": 2
+      },
+      "cceCalls": 3,
+      "toolErrors": 0,
+      "staleSha": 0,
+      "taskSuccess": false,
+      "answer": {
+        "definition": "src/domain/rules.ts:canWaiveDeliveryFee",
+        "callers": [
+          "src/checkout/preview.ts:previewOrder",
+          "src/checkout/quote.ts:quoteOrder"
+        ],
+        "cases": [
+          false,
+          true,
+          false,
+          false
+        ]
+      },
+      "evidenceAllRequired": true,
+      "bodies": [
+        {
+          "source": {
+            "path": "src/domain/rules.ts",
+            "startLine": 1,
+            "endLine": 6,
+            "sha256": "aa117cb0f7955fa9d29d09c6397c80a501821cf3389eb7c522b3b7628a0fe986"
+          },
+          "text": "export interface Customer { active: boolean; level: 'gold' | 'silver' }\n/** Current delivery fee waiver policy. */\nexport function canWaiveDeliveryFee(customer: Customer, totalCents: number): boolean {\n  return customer.active && customer.level === 'gold' && totalCents >= 5000;\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/quote.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "fa558d5a5a55f55d2bfa4c622ca4436d2958bd4bc788b8a6655bfe85303c54a2"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function quoteOrder(customer: Customer, totalCents: number) {\n  return {deliveryCents: canWaiveDeliveryFee(customer, totalCents) ? 0 : 700};\n}\n",
+          "representation": "FULL_FILE"
+        },
+        {
+          "source": {
+            "path": "src/checkout/preview.ts",
+            "startLine": 1,
+            "endLine": 5,
+            "sha256": "943b46b9154b5b9aea545167c064f9eacefd3268e970dee9bc62ac505c5c58aa"
+          },
+          "text": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function previewOrder(customer: Customer, totalCents: number) {\n  return {freeDelivery: canWaiveDeliveryFee(customer, totalCents)};\n}\n",
+          "representation": "FULL_FILE"
+        }
+      ]
+    },
+    {
+      "id": "r2-known-path-baseline",
+      "scenario": "known-path",
+      "repetition": 2,
+      "arm": "baseline",
+      "durationMs": 12829,
+      "checks": {
+        "shape": true,
+        "definition": true,
+        "callers": true,
+        "cases": true
+      },
+      "correct": true,
+      "usage": {
+        "source": "codex-cli",
+        "available": true,
+        "raw": {
+          "input_tokens": 37065,
+          "cached_input_tokens": 23552,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 98,
+          "reasoning_output_tokens": 0
+        },
+        "input": 37065,
+        "cachedInput": 23552,
+        "nonCachedInput": 13513,
+        "output": 98,
+        "modelRequests": null
+      },
+      "toolCounts": {
+        "workspace_read_file": 1
+      },
+      "cceCalls": 0,
+      "toolErrors": 0,
+      "staleSha": 0,
+      "taskSuccess": true,
+      "answer": {
+        "definition": "src/domain/rules.ts:canWaiveDeliveryFee",
+        "callers": [],
+        "cases": [
+          false,
+          true,
+          false,
+          false
+        ]
+      },
+      "evidenceAllRequired": true,
+      "bodies": [
+        {
+          "source": {
+            "path": "src/domain/rules.ts",
+            "startLine": 1,
+            "endLine": 6,
+            "sha256": "aa117cb0f7955fa9d29d09c6397c80a501821cf3389eb7c522b3b7628a0fe986"
+          },
+          "text": "export interface Customer { active: boolean; level: 'gold' | 'silver' }\n/** Current delivery fee waiver policy. */\nexport function canWaiveDeliveryFee(customer: Customer, totalCents: number): boolean {\n  return customer.active && customer.level === 'gold' && totalCents >= 5000;\n}\n",
+          "representation": "FULL_FILE"
+        }
+      ]
+    }
+  ],
+  "scope": "Read-only synthetic fixture; CLI usage, uncontrolled cache, no coding/lifecycle",
+  "historicalKnownPathAmbiguityPreserved": true
+}

@@ -1,0 +1,48 @@
+name: Reviewed alpha publication
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the reviewed alpha to npm and GitHub
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+jobs:
+  verify:
+    uses: ./.github/workflows/ci.yml
+  publish:
+    if: inputs.publish && startsWith(github.ref, 'refs/tags/v')
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: npm-alpha
+    permissions:
+      contents: write
+      id-token: write
+    env:
+      CCE_RELEASE_REPOSITORY: https://github.com/${{ github.repository }}
+      CCE_RELEASE_SCOPE: ${{ vars.NPM_SCOPE }}
+      CCE_RELEASE_TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24.x'
+          registry-url: https://registry.npmjs.org
+      - run: npm install --global npm@11.20.0 --ignore-scripts --no-audit --no-fund
+      - run: sudo apt-get update && sudo apt-get install -y ripgrep
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run release:stage && npm run release:audit
+      - run: npm run release:pack && npm run release:clean-install
+      - run: node scripts/release/publish-gate.mjs
+      - name: Publish using configured npm Trusted Publisher
+        run: node scripts/release/publish.mjs
+        env:
+          CCE_CONFIRM_PUBLICATION: alpha-reviewed
+      - name: GitHub prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$CCE_RELEASE_TAG" release-artifacts/run-*/*.tgz --verify-tag --prerelease --title "CCE $CCE_RELEASE_TAG" --notes-file CHANGELOG.md

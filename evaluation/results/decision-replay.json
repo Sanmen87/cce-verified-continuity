@@ -1,0 +1,136 @@
+{
+  "publication": "DERIVED_PUBLIC_VIEW_NOT_ORIGINAL_BYTES",
+  "sourceId": "source-19",
+  "at": "2026-11-16T18:34:30.678Z",
+  "scope": "Decision-only saved-artifact analysis; commands not executed",
+  "byArm": {
+    "baseline": {
+      "trials": 2,
+      "verificationSelections": 2,
+      "repeatCreateProbes": 0,
+      "inputTokens": 69228,
+      "outputTokens": 780,
+      "totalTokens": 70008,
+      "reasoningTokens": 562,
+      "durationMs": 356610
+    },
+    "current-work": {
+      "trials": 2,
+      "verificationSelections": 2,
+      "repeatCreateProbes": 0,
+      "inputTokens": 70220,
+      "outputTokens": 384,
+      "totalTokens": 70604,
+      "reasoningTokens": 143,
+      "durationMs": 25803
+    }
+  },
+  "comparison": {
+    "inputPercent": 1.4329462067371512,
+    "outputPercent": -50.76923076923077,
+    "totalPercent": 0.8513312764255598
+  },
+  "verdict": {
+    "transport": "PASS_4_OF_4",
+    "nextAction": "BOTH_ARMS_SELECTED_VERIFICATION_2_OF_2",
+    "currentWorkCausalBenefit": "NOT_ESTABLISHED",
+    "loopEliminatedInCoding": "NOT_EXERCISED",
+    "independentCodingAcceptance": "NOT_EXERCISED",
+    "cacheControl": "UNCONTROLLED"
+  },
+  "originalPrimarySha256": "055c95701425c72dcc24f1bb8eda611959df9fba86456d8464e6eb465a2c4888",
+  "runnerSha256": "a058e0455a674c81028b867faf67602a1225d38f61c87add0db82b4a16a4fd64",
+  "limitations": [
+    "Two generations per arm at one fixed snapshot are diagnostic, not independent coding trials",
+    "First request has no prior trial warm-up; AB/BA does not equalize backend cache",
+    "First body time is not an isolated prefill or first generated token measurement",
+    "No commands executed: test outcomes, receipts, code correctness and preservation of acceptance unknown",
+    "Commands use tail pipelines which can mask Python exit codes if later executed"
+  ],
+  "trials": [
+    {
+      "pair": 1,
+      "arm": "baseline",
+      "payloadSha256": "28fd5e4154ee96cab5816b80383b60678d2ece6aaa3d4192d9865679e128fdcb",
+      "firstBodyMs": 331083,
+      "durationMs": 343245,
+      "httpStatus": 200,
+      "finish": "tool_calls",
+      "usage": {
+        "prompt_tokens": 34614,
+        "completion_tokens": 390,
+        "total_tokens": 35004,
+        "completion_tokens_details": {
+          "reasoning_tokens": 281
+        }
+      },
+      "toolsExecuted": 0,
+      "independentCodingAcceptance": "NOT_EXERCISED",
+      "usefulVerificationSelection": true,
+      "repeatCreateProbe": false
+    },
+    {
+      "pair": 1,
+      "arm": "current-work",
+      "payloadSha256": "7a192fe2c5c0eed02cc09386a2119b35a2f9cea3c3582ccb7bae6e33afdd0d3d",
+      "firstBodyMs": 12887,
+      "durationMs": 18722,
+      "httpStatus": 200,
+      "finish": "tool_calls",
+      "usage": {
+        "prompt_tokens": 35110,
+        "completion_tokens": 176,
+        "total_tokens": 35286,
+        "completion_tokens_details": {
+          "reasoning_tokens": 79
+        }
+      },
+      "toolsExecuted": 0,
+      "independentCodingAcceptance": "NOT_EXERCISED",
+      "usefulVerificationSelection": true,
+      "repeatCreateProbe": false
+    },
+    {
+      "pair": 2,
+      "arm": "current-work",
+      "payloadSha256": "7a192fe2c5c0eed02cc09386a2119b35a2f9cea3c3582ccb7bae6e33afdd0d3d",
+      "firstBodyMs": 242,
+      "durationMs": 7081,
+      "httpStatus": 200,
+      "finish": "tool_calls",
+      "usage": {
+        "prompt_tokens": 35110,
+        "completion_tokens": 208,
+        "total_tokens": 35318,
+        "completion_tokens_details": {
+          "reasoning_tokens": 64
+        }
+      },
+      "toolsExecuted": 0,
+      "independentCodingAcceptance": "NOT_EXERCISED",
+      "usefulVerificationSelection": true,
+      "repeatCreateProbe": false
+    },
+    {
+      "pair": 2,
+      "arm": "baseline",
+      "payloadSha256": "28fd5e4154ee96cab5816b80383b60678d2ece6aaa3d4192d9865679e128fdcb",
+      "firstBodyMs": 1134,
+      "durationMs": 13365,
+      "httpStatus": 200,
+      "finish": "tool_calls",
+      "usage": {
+        "prompt_tokens": 34614,
+        "completion_tokens": 390,
+        "total_tokens": 35004,
+        "completion_tokens_details": {
+          "reasoning_tokens": 281
+        }
+      },
+      "toolsExecuted": 0,
+      "independentCodingAcceptance": "NOT_EXERCISED",
+      "usefulVerificationSelection": true,
+      "repeatCreateProbe": false
+    }
+  ]
+}

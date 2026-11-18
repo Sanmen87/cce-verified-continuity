@@ -1,0 +1,346 @@
+{
+  "publication": "DERIVED_PUBLIC_VIEW_NOT_ORIGINAL_BYTES",
+  "sourceId": "source-1",
+  "generatedAt": "2026-11-04T11:56:19.989Z",
+  "design": "single pilot per task/mode; no statistical inference",
+  "runs": [
+    {
+      "experimentId": "A-baseline-pilot",
+      "taskId": "A",
+      "mode": "baseline",
+      "gitSha": "b1e9f2ea25bb2c755302d661c2f12fa716774f3e",
+      "taskSha256": "d33ca85ad94b1ea619ee0b2ef65eebfc0c36beb2748f04eb1b6c62fdf3cb4f66",
+      "cceSourceTreeSha256": "5e19c1d58b8fa74f26b2a9712317d99b501c0a0dce8071ee1a5c12ee435a1499",
+      "contextWindow": 65536,
+      "sampling": {
+        "temperature": 0.2,
+        "top_p": 0.95,
+        "seed": 42,
+        "max_tokens": 2048
+      },
+      "node": "v26.13.0",
+      "pi": "1.4.0",
+      "status": "complete",
+      "finalStopReason": "stop",
+      "llmRequests": 6,
+      "inputTokens": 46889,
+      "outputTokens": 2259,
+      "cacheReadTokens": null,
+      "cacheWriteTokens": null,
+      "tokenSource": "measured:provider-reported via Pi",
+      "cceToolCalls": 0,
+      "compactions": 0,
+      "durationMs": 126133,
+      "toolErrors": 0,
+      "providerErrors": 0,
+      "model": {
+        "file": "Cyber-Tiel-Coder-35B-A3B-MTP-UD-Q2_K_XL.gguf",
+        "sha256": "9fd8dae3d4fb9be2ecaea0b71fe9cddb361c0aef6fdc1331798de8e6483183a8"
+      },
+      "acceptance": {
+        "status": "PASS"
+      }
+    },
+    {
+      "experimentId": "A-observe-only-pilot",
+      "taskId": "A",
+      "mode": "observe-only",
+      "gitSha": "b1e9f2ea25bb2c755302d661c2f12fa716774f3e",
+      "taskSha256": "d33ca85ad94b1ea619ee0b2ef65eebfc0c36beb2748f04eb1b6c62fdf3cb4f66",
+      "cceSourceTreeSha256": "82047511783ecfeb6ddb8a8c5da098fa445bc22b900f51bc3a27d8936c90a321",
+      "contextWindow": 65536,
+      "sampling": {
+        "temperature": 0.2,
+        "top_p": 0.95,
+        "seed": 42,
+        "max_tokens": 2048
+      },
+      "node": "v26.13.0",
+      "pi": "1.4.0",
+      "status": "complete",
+      "finalStopReason": "stop",
+      "llmRequests": 6,
+      "inputTokens": 46889,
+      "outputTokens": 2259,
+      "cacheReadTokens": null,
+      "cacheWriteTokens": null,
+      "tokenSource": "measured:provider-reported via Pi",
+      "cceToolCalls": 0,
+      "compactions": 0,
+      "durationMs": 119990,
+      "toolErrors": 0,
+      "providerErrors": 0,
+      "model": {
+        "file": "Cyber-Tiel-Coder-35B-A3B-MTP-UD-Q2_K_XL.gguf",
+        "sha256": "9fd8dae3d4fb9be2ecaea0b71fe9cddb361c0aef6fdc1331798de8e6483183a8"
+      },
+      "acceptance": {
+        "status": "PASS"
+      }
+    },
+    {
+      "experimentId": "A-assist-pilot",
+      "taskId": "A",
+      "mode": "assist",
+      "gitSha": "b1e9f2ea25bb2c755302d661c2f12fa716774f3e",
+      "taskSha256": "d33ca85ad94b1ea619ee0b2ef65eebfc0c36beb2748f04eb1b6c62fdf3cb4f66",
+      "cceSourceTreeSha256": "82047511783ecfeb6ddb8a8c5da098fa445bc22b900f51bc3a27d8936c90a321",
+      "contextWindow": 65536,
+      "sampling": {
+        "temperature": 0.2,
+        "top_p": 0.95,
+        "seed": 42,
+        "max_tokens": 2048
+      },
+      "node": "v26.13.0",
+      "pi": "1.4.0",
+      "status": "complete",
+      "finalStopReason": "stop",
+      "llmRequests": 6,
+      "inputTokens": 29882,
+      "outputTokens": 1544,
+      "cacheReadTokens": null,
+      "cacheWriteTokens": null,
+      "tokenSource": "measured:provider-reported via Pi",
+      "cceToolCalls": 1,
+      "compactions": 0,
+      "durationMs": 80825,
+      "toolErrors": 0,
+      "providerErrors": 0,
+      "model": {
+        "file": "Cyber-Tiel-Coder-35B-A3B-MTP-UD-Q2_K_XL.gguf",
+        "sha256": "9fd8dae3d4fb9be2ecaea0b71fe9cddb361c0aef6fdc1331798de8e6483183a8"
+      },
+      "acceptance": {
+        "status": "PASS"
+      }
+    },
+    {
+      "experimentId": "B-baseline-pilot",
+      "taskId": "B",
+      "mode": "baseline",
+      "gitSha": "b1e9f2ea25bb2c755302d661c2f12fa716774f3e",
+      "taskSha256": "c1f3d18f33e84730d78faf4b2eae3e6ae58b4889e731df37349dc75f622fd36e",
+      "cceSourceTreeSha256": "95f17899cea6fc1eec213596b33d8aaae35a5b1e220fb5944a50e6894b4996bf",
+      "contextWindow": 65536,
+      "sampling": {
+        "temperature": 0.2,
+        "top_p": 0.95,
+        "seed": 42,
+        "max_tokens": 2048
+      },
+      "node": "v26.13.0",
+      "pi": "1.4.0",
+      "status": "request-limit",
+      "finalStopReason": "toolUse",
+      "llmRequests": 14,
+      "inputTokens": 244638,
+      "outputTokens": 1057,
+      "cacheReadTokens": null,
+      "cacheWriteTokens": null,
+      "tokenSource": "measured:provider-reported via Pi",
+      "cceToolCalls": 0,
+      "compactions": 0,
+      "durationMs": 304977,
+      "toolErrors": 1,
+      "providerErrors": 0,
+      "model": {
+        "file": "Cyber-Tiel-Coder-35B-A3B-MTP-UD-Q2_K_XL.gguf",
+        "sha256": "9fd8dae3d4fb9be2ecaea0b71fe9cddb361c0aef6fdc1331798de8e6483183a8"
+      },
+      "acceptance": {
+        "status": "FAIL"
+      }
+    },
+    {
+      "experimentId": "B-observe-only-pilot",
+      "taskId": "B",
+      "mode": "observe-only",
+      "gitSha": "b1e9f2ea25bb2c755302d661c2f12fa716774f3e",
+      "taskSha256": "c1f3d18f33e84730d78faf4b2eae3e6ae58b4889e731df37349dc75f622fd36e",
+      "cceSourceTreeSha256": "3d76d6c675b30d8ec49392b5b385b212e98a005179e33d69f53c97120fe5e058",
+      "contextWindow": 65536,
+      "sampling": {
+        "temperature": 0.2,
+        "top_p": 0.95,
+        "seed": 42,
+        "max_tokens": 2048
+      },
+      "node": "v26.13.0",
+      "pi": "1.4.0",
+      "status": "request-limit",
+      "finalStopReason": "toolUse",
+      "llmRequests": 14,
+      "inputTokens": 244638,
+      "outputTokens": 1057,
+      "cacheReadTokens": null,
+      "cacheWriteTokens": null,
+      "tokenSource": "measured:provider-reported via Pi",
+      "cceToolCalls": 0,
+      "compactions": 0,
+      "durationMs": 298468,
+      "toolErrors": 1,
+      "providerErrors": 0,
+      "model": {
+        "file": "Cyber-Tiel-Coder-35B-A3B-MTP-UD-Q2_K_XL.gguf",
+        "sha256": "9fd8dae3d4fb9be2ecaea0b71fe9cddb361c0aef6fdc1331798de8e6483183a8"
+      },
+      "acceptance": {
+        "status": "FAIL"
+      }
+    },
+    {
+      "experimentId": "B-assist-pilot",
+      "taskId": "B",
+      "mode": "assist",
+      "gitSha": "b1e9f2ea25bb2c755302d661c2f12fa716774f3e",
+      "taskSha256": "c1f3d18f33e84730d78faf4b2eae3e6ae58b4889e731df37349dc75f622fd36e",
+      "cceSourceTreeSha256": "95f17899cea6fc1eec213596b33d8aaae35a5b1e220fb5944a50e6894b4996bf",
+      "contextWindow": 65536,
+      "sampling": {
+        "temperature": 0.2,
+        "top_p": 0.95,
+        "seed": 42,
+        "max_tokens": 2048
+      },
+      "node": "v26.13.0",
+      "pi": "1.4.0",
+      "status": "request-limit",
+      "finalStopReason": "length",
+      "llmRequests": 14,
+      "inputTokens": 177248,
+      "outputTokens": 2908,
+      "cacheReadTokens": null,
+      "cacheWriteTokens": null,
+      "tokenSource": "measured:provider-reported via Pi",
+      "cceToolCalls": 1,
+      "compactions": 0,
+      "durationMs": 233384,
+      "toolErrors": 2,
+      "providerErrors": 0,
+      "model": {
+        "file": "Cyber-Tiel-Coder-35B-A3B-MTP-UD-Q2_K_XL.gguf",
+        "sha256": "9fd8dae3d4fb9be2ecaea0b71fe9cddb361c0aef6fdc1331798de8e6483183a8"
+      },
+      "acceptance": {
+        "status": "FAIL"
+      }
+    },
+    {
+      "experimentId": "C-baseline-pilot",
+      "taskId": "C",
+      "mode": "baseline",
+      "gitSha": "b1e9f2ea25bb2c755302d661c2f12fa716774f3e",
+      "taskSha256": "fc96df7973941c53a1150eafac764ceb5aec4d008b59fc56978080b14333afc5",
+      "cceSourceTreeSha256": "9bd9225438b0de6a20e4174801f1564d2d88255c512740ffbf85c589957dd76f",
+      "contextWindow": 65536,
+      "sampling": {
+        "temperature": 0.2,
+        "top_p": 0.95,
+        "seed": 42,
+        "max_tokens": 2048
+      },
+      "node": "v26.13.0",
+      "pi": "1.4.0",
+      "status": "request-limit",
+      "finalStopReason": "toolUse",
+      "llmRequests": 14,
+      "inputTokens": 181394,
+      "outputTokens": 4460,
+      "cacheReadTokens": null,
+      "cacheWriteTokens": null,
+      "tokenSource": "measured:provider-reported via Pi",
+      "cceToolCalls": 0,
+      "compactions": 0,
+      "durationMs": 314025,
+      "toolErrors": 3,
+      "providerErrors": 0,
+      "model": {
+        "file": "Cyber-Tiel-Coder-35B-A3B-MTP-UD-Q2_K_XL.gguf",
+        "sha256": "9fd8dae3d4fb9be2ecaea0b71fe9cddb361c0aef6fdc1331798de8e6483183a8"
+      },
+      "acceptance": {
+        "status": "FAIL"
+      }
+    },
+    {
+      "experimentId": "C-observe-only-pilot",
+      "taskId": "C",
+      "mode": "observe-only",
+      "gitSha": "b1e9f2ea25bb2c755302d661c2f12fa716774f3e",
+      "taskSha256": "fc96df7973941c53a1150eafac764ceb5aec4d008b59fc56978080b14333afc5",
+      "cceSourceTreeSha256": "4ca51a5f4396273b21d59133cf46b012dcc1cfe78cbd01367afa27b60db28bfa",
+      "contextWindow": 65536,
+      "sampling": {
+        "temperature": 0.2,
+        "top_p": 0.95,
+        "seed": 42,
+        "max_tokens": 2048
+      },
+      "node": "v26.13.0",
+      "pi": "1.4.0",
+      "status": "output-limit",
+      "finalStopReason": "length",
+      "llmRequests": 11,
+      "inputTokens": 152692,
+      "outputTokens": 3292,
+      "cacheReadTokens": null,
+      "cacheWriteTokens": null,
+      "tokenSource": "measured:provider-reported via Pi",
+      "cceToolCalls": 0,
+      "compactions": 0,
+      "durationMs": 299591,
+      "toolErrors": 2,
+      "providerErrors": 0,
+      "model": {
+        "file": "Cyber-Tiel-Coder-35B-A3B-MTP-UD-Q2_K_XL.gguf",
+        "sha256": "9fd8dae3d4fb9be2ecaea0b71fe9cddb361c0aef6fdc1331798de8e6483183a8"
+      },
+      "acceptance": {
+        "status": "FAIL"
+      }
+    },
+    {
+      "experimentId": "C-assist-pilot",
+      "taskId": "C",
+      "mode": "assist",
+      "gitSha": "b1e9f2ea25bb2c755302d661c2f12fa716774f3e",
+      "taskSha256": "fc96df7973941c53a1150eafac764ceb5aec4d008b59fc56978080b14333afc5",
+      "cceSourceTreeSha256": "4ca51a5f4396273b21d59133cf46b012dcc1cfe78cbd01367afa27b60db28bfa",
+      "contextWindow": 65536,
+      "sampling": {
+        "temperature": 0.2,
+        "top_p": 0.95,
+        "seed": 42,
+        "max_tokens": 2048
+      },
+      "node": "v26.13.0",
+      "pi": "1.4.0",
+      "status": "request-limit",
+      "finalStopReason": "toolUse",
+      "llmRequests": 14,
+      "inputTokens": 111025,
+      "outputTokens": 1184,
+      "cacheReadTokens": null,
+      "cacheWriteTokens": null,
+      "tokenSource": "measured:provider-reported via Pi",
+      "cceToolCalls": 2,
+      "compactions": 0,
+      "durationMs": 133894,
+      "toolErrors": 1,
+      "providerErrors": 0,
+      "model": {
+        "file": "Cyber-Tiel-Coder-35B-A3B-MTP-UD-Q2_K_XL.gguf",
+        "sha256": "9fd8dae3d4fb9be2ecaea0b71fe9cddb361c0aef6fdc1331798de8e6483183a8"
+      },
+      "acceptance": {
+        "status": "FAIL"
+      }
+    }
+  ],
+  "limitations": [
+    "One trial per task/mode; experimental request/output caps, not native unrestricted Pi",
+    "Only task A accepted; failed B/C cannot establish token savings",
+    "Five original notification failures and diagnostics are described in the published report"
+  ]
+}

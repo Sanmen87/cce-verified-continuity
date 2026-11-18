@@ -1,0 +1,34 @@
+{
+  "name": "cce-lite",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "workspaces": [
+    "packages/core",
+    "packages/pi-extension",
+    "packages/mcp"
+  ],
+  "scripts": {
+    "release:pack": "npm run build && node scripts/release/pack.mjs",
+    "release:stage": "node scripts/release/stage.mjs",
+    "release:audit": "node scripts/release/audit.mjs",
+    "release:clean-install": "node scripts/release/clean-install.mjs",
+    "test:public": "node scripts/release/public-tests.mjs",
+    "test:evaluation": "node evaluation/scripts/verify.mjs",
+    "test:release": "node --test scripts/release/*.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json && node scripts/copy-assets.mjs",
+    "smoke:pi": "node --experimental-strip-types scripts/pi-smoke.ts",
+    "test": "node scripts/release/public-tests.mjs"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "1.5.0",
+    "@types/node": "22.19.19",
+    "typebox": "1.3.27",
+    "typescript": "5.9.3"
+  }
+}

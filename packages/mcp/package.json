@@ -1,0 +1,12 @@
+{
+  "name": "@cce/mcp",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": { "node": ">=22.19.0" },
+  "description": "Local read-only MCP adapter for CCE; no Pi or cloud dependency.",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2"
+  }
+}

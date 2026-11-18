@@ -1,0 +1,79 @@
+{
+  "publication": "DERIVED_PUBLIC_VIEW_NOT_ORIGINAL_BYTES",
+  "sourceId": "source-2",
+  "measuredAt": "2026-11-04T17:59:48.763Z",
+  "crmCommit": "b1e9f2ea25bb2c755302d661c2f12fa716774f3e",
+  "corpusHash": "d4570a396805867358067666b0908556cf58ac6510035bab8bd5608f81aff3a0",
+  "corpusFiles": 411,
+  "querySha256": "12bb69ef04db9d4e020717344d4412b1313e2f20559a0f59bd1535b72dc9b67f",
+  "queryCount": 36,
+  "elaraCommit": "75071156e08a145fab17c8ce30bb5f418286f434",
+  "embedding": {
+    "model": "text-embedding-nomic-embed-text-v1.5",
+    "sha256": "d4e388894e09cf3816e8b0896d81d265b55e7a9fff9ab03fe8bf4ef5e11295ac",
+    "dimension": 768,
+    "preprocessing": "raw 3000 Unicode code points, no prefix"
+  },
+  "policy": {
+    "topK": 10,
+    "confidenceThreshold": 0,
+    "marginalRatio": 0,
+    "graph": false,
+    "literal": false,
+    "payloadBytes": 16000,
+    "sourceFormat": "same SHA-verified full source ranges",
+    "cold": "first query pass, OS/model disk caches NOT flushed",
+    "warmRepeats": 3,
+    "order": [
+      "cce-typescript",
+      "elara-python"
+    ],
+    "limitations": [
+      "single machine, one index build per arm",
+      "incomplete manually curated relevance labels",
+      "RSS sampled at operation boundaries; not peak allocation",
+      "no provider token measurement; payload token counts are conservative estimates"
+    ]
+  },
+  "arms": [
+    {
+      "name": "cce-typescript",
+      "summary": {
+        "recall5": 0.4583333333333333,
+        "recall10": 0.5555555555555556,
+        "precision5": 0.09444444444444447,
+        "mrr": 0.35123456790123453,
+        "ndcg10": 0.3947419855217609,
+        "firstPassP50Ms": 150.84139999999024,
+        "firstPassP95Ms": 177.50040000000445,
+        "warmP50Ms": 140.51910000000498,
+        "warmP95Ms": 177.01320000000123,
+        "sampledPeakRssBytes": 431542272,
+        "meanPayloadBytes": 5415.972222222223,
+        "meanContextRecall": 0.5555555555555556,
+        "invalidReferences": 0,
+        "indexBytes": 149231248
+      }
+    },
+    {
+      "name": "elara-python",
+      "summary": {
+        "recall5": 0.625,
+        "recall10": 0.6944444444444444,
+        "precision5": 0.12777777777777782,
+        "mrr": 0.47109788359788357,
+        "ndcg10": 0.5280334829935884,
+        "firstPassP50Ms": 33.4623999951873,
+        "firstPassP95Ms": 63.480199984041974,
+        "warmP50Ms": 7.553800009191036,
+        "warmP95Ms": 8.576299995183945,
+        "sampledPeakRssBytes": 117039104,
+        "meanPayloadBytes": 9268.027777777777,
+        "meanContextRecall": 0.6944444444444444,
+        "invalidReferences": 0,
+        "indexBytes": 33416321
+      }
+    }
+  ],
+  "scope": "Offline source retrieval, not coding quality or provider-token savings"
+}

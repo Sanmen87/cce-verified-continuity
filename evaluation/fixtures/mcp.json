@@ -1,0 +1,10 @@
+{
+  "src/domain/rules.ts": "export interface Customer { active: boolean; level: 'gold' | 'silver' }\n/** Current delivery fee waiver policy. */\nexport function canWaiveDeliveryFee(customer: Customer, totalCents: number): boolean {\n  return customer.active && customer.level === 'gold' && totalCents >= 5000;\n}\n",
+  "src/checkout/quote.ts": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function quoteOrder(customer: Customer, totalCents: number) {\n  return {deliveryCents: canWaiveDeliveryFee(customer, totalCents) ? 0 : 700};\n}\n",
+  "src/checkout/preview.ts": "import {canWaiveDeliveryFee, type Customer} from '../domain/rules';\nexport function previewOrder(customer: Customer, totalCents: number) {\n  return {freeDelivery: canWaiveDeliveryFee(customer, totalCents)};\n}\n",
+  "src/legacy/rules.ts": "/** Historical policy; not the active checkout policy. */\nexport function canWaiveDeliveryFee(active: boolean) { return active; }\n",
+  "src/catalog/products.ts": "export const products = [{id: 1, priceCents: 2700}];\n",
+  "src/users/profile.ts": "export function displayName(name: string) { return name.trim(); }\n",
+  "src/checkout/taxes.ts": "export function taxes(cents: number) { return Math.floor(cents / 5); }\n",
+  "README.md": "Public read-only fixture. Current checkout modules use src/domain/rules.ts; src/legacy is historical. No dependencies, installation or code execution are needed.\n"
+}

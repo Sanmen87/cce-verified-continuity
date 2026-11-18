@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.context-engine/
+.bench/
+*.tsbuildinfo
+*.log
+__pycache__/
+*.pyc
+experiments/
+/benchmarks/
+/release-artifacts/
+/.release/
+/.npmrc
+*.tgz
+*.db
+*.db-wal
+*.db-shm

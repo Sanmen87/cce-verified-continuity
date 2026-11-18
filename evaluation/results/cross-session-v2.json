@@ -1,0 +1,62 @@
+{
+  "publication": "DERIVED_PUBLIC_VIEW_NOT_ORIGINAL_BYTES",
+  "sourceId": "source-18",
+  "id": "2026-11-13T20-50-46-804Z-a6c8efcc",
+  "experiment": "cross-session-v2",
+  "status": "STOPPED",
+  "acceptance": "NOT_EVALUATED",
+  "termination": "TRIAL_WATCHDOG",
+  "startedAt": "2026-11-13T20:53:33.851Z",
+  "finishedAt": "2026-11-13T21:43:36.619Z",
+  "compactions": 0,
+  "modelRequests": 26,
+  "trialWatchdogSeconds": 3000,
+  "toolCounts": {
+    "read": 7,
+    "edit": 5,
+    "bash": 17
+  },
+  "completedPhases": 0,
+  "usage": {
+    "attempts": 26,
+    "knownCalls": 25,
+    "unknownCalls": 1,
+    "complete": false,
+    "inputLowerBound": 741180,
+    "outputLowerBound": 20704,
+    "cache": "UNAVAILABLE unless explicitly supplied by provider"
+  },
+  "actualProviderPayloads": 25,
+  "frozenInputsVerified": true,
+  "posthocPartial": {
+    "phase": 2,
+    "grade": {
+      "status": "FAIL",
+      "passed": 17,
+      "total": 21,
+      "evaluated": 21,
+      "invalidResponses": 0
+    }
+  },
+  "evidence": {
+    "contractDelivered": true,
+    "startupMapDelivered": true,
+    "startupReceiptAuthority": "HISTORICAL_ONLY_RECHECK_REQUIRED",
+    "nativeTranscriptImported": false,
+    "nativeReadCalls": 7,
+    "nativeFullSourceReread": false,
+    "cceToolCalls": 0,
+    "fullExplorationAvoided": "NOT_ESTABLISHED_BY_NATIVE_READ_COUNTS_ALONE"
+  },
+  "readingMetrics": {
+    "attempted": 7,
+    "successful": 7,
+    "failed": 0,
+    "unknownOutcome": 0,
+    "projectReads": 6,
+    "uniqueProjectPaths": 5,
+    "repeatedProjectPathReads": 1,
+    "repeatedSameRangeWithoutObservedChange": 0,
+    "rangeMetadataUnknown": 0
+  }
+}

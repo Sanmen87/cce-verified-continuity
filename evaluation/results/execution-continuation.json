@@ -1,0 +1,765 @@
+{
+  "publication": "DERIVED_PUBLIC_VIEW_NOT_ORIGINAL_BYTES",
+  "sourceId": "source-20",
+  "at": "2026-11-18T22:14:30.893Z",
+  "finishedAt": "2026-11-18T22:10:17.363Z",
+  "scope": "Descriptive completed-attempt summary including explicitly labeled post-hoc pair-2 retry; original failed attempt retained separately. Not four clean preregistered pairs.",
+  "records": [
+    {
+      "pair": 1,
+      "order": [
+        "baseline",
+        "current-work"
+      ],
+      "classification": "ORIGINAL_DIAGNOSTIC_PAIR",
+      "finishedAt": "2026-11-18T20:20:31.070Z",
+      "initialPassed": 17,
+      "arms": [
+        {
+          "arm": "baseline",
+          "acceptance": "FAIL",
+          "passed": 17,
+          "total": 21,
+          "stop": "MODEL_CYCLE_LIMIT",
+          "cycles": 8,
+          "inputTokens": 280907,
+          "outputTokens": 2768,
+          "totalTokens": 283675,
+          "reasoningTokens": 1520,
+          "sourceChanges": 1,
+          "repeats": [],
+          "elapsedMs": 575631,
+          "firstBodyMs": 379076,
+          "requirementsDelivered": true,
+          "degenerateReasoningResponses": 0,
+          "swallowedExceptionProbes": 2
+        },
+        {
+          "arm": "current-work",
+          "acceptance": "FAIL",
+          "passed": 20,
+          "total": 21,
+          "stop": "MODEL_CYCLE_LIMIT",
+          "cycles": 8,
+          "inputTokens": 296989,
+          "outputTokens": 4841,
+          "totalTokens": 301830,
+          "reasoningTokens": 3488,
+          "sourceChanges": 2,
+          "repeats": [],
+          "elapsedMs": 386981,
+          "firstBodyMs": 17604,
+          "requirementsDelivered": true,
+          "degenerateReasoningResponses": 0,
+          "swallowedExceptionProbes": 1
+        }
+      ]
+    },
+    {
+      "pair": 2,
+      "order": [
+        "current-work",
+        "baseline"
+      ],
+      "classification": "POST_HOC_RETRY_AFTER_RELOAD",
+      "finishedAt": "2026-11-18T21:50:32.927Z",
+      "initialPassed": 17,
+      "arms": [
+        {
+          "arm": "current-work",
+          "acceptance": "FAIL",
+          "passed": 17,
+          "total": 21,
+          "stop": "MODEL_CYCLE_LIMIT",
+          "cycles": 8,
+          "inputTokens": 281126,
+          "outputTokens": 3744,
+          "totalTokens": 284870,
+          "reasoningTokens": 2248,
+          "sourceChanges": 0,
+          "repeats": [
+            {
+              "indices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+              ],
+              "count": 8,
+              "classification": "SAME_ACTION_OUTPUT_AND_SOURCE",
+              "redundancy": "NOT_ESTABLISHED"
+            }
+          ],
+          "elapsedMs": 438244,
+          "firstBodyMs": 300089,
+          "requirementsDelivered": true,
+          "degenerateReasoningResponses": 0,
+          "swallowedExceptionProbes": 0
+        },
+        {
+          "arm": "baseline",
+          "acceptance": "FAIL",
+          "passed": 17,
+          "total": 21,
+          "stop": "MODEL_CYCLE_LIMIT",
+          "cycles": 8,
+          "inputTokens": 275352,
+          "outputTokens": 3232,
+          "totalTokens": 278584,
+          "reasoningTokens": 1736,
+          "sourceChanges": 0,
+          "repeats": [
+            {
+              "indices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+              ],
+              "count": 8,
+              "classification": "SAME_ACTION_OUTPUT_AND_SOURCE",
+              "redundancy": "NOT_ESTABLISHED"
+            }
+          ],
+          "elapsedMs": 121130,
+          "firstBodyMs": 1135,
+          "requirementsDelivered": true,
+          "degenerateReasoningResponses": 0,
+          "swallowedExceptionProbes": 0
+        }
+      ]
+    },
+    {
+      "pair": 3,
+      "order": [
+        "current-work",
+        "baseline"
+      ],
+      "classification": "PLANNED_PAIR_AFTER_BACKEND_RELOAD",
+      "finishedAt": "2026-11-18T22:02:15.391Z",
+      "initialPassed": 17,
+      "arms": [
+        {
+          "arm": "current-work",
+          "acceptance": "FAIL",
+          "passed": 17,
+          "total": 21,
+          "stop": "MODEL_CYCLE_LIMIT",
+          "cycles": 8,
+          "inputTokens": 281240,
+          "outputTokens": 3776,
+          "totalTokens": 285016,
+          "reasoningTokens": 2280,
+          "sourceChanges": 0,
+          "repeats": [
+            {
+              "indices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+              ],
+              "count": 8,
+              "classification": "SAME_ACTION_OUTPUT_AND_SOURCE",
+              "redundancy": "NOT_ESTABLISHED"
+            }
+          ],
+          "elapsedMs": 146868,
+          "firstBodyMs": 6612,
+          "requirementsDelivered": true,
+          "degenerateReasoningResponses": 0,
+          "swallowedExceptionProbes": 0
+        },
+        {
+          "arm": "baseline",
+          "acceptance": "FAIL",
+          "passed": 17,
+          "total": 21,
+          "stop": "MODEL_CYCLE_LIMIT",
+          "cycles": 8,
+          "inputTokens": 275352,
+          "outputTokens": 3232,
+          "totalTokens": 278584,
+          "reasoningTokens": 1736,
+          "sourceChanges": 0,
+          "repeats": [
+            {
+              "indices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+              ],
+              "count": 8,
+              "classification": "SAME_ACTION_OUTPUT_AND_SOURCE",
+              "redundancy": "NOT_ESTABLISHED"
+            }
+          ],
+          "elapsedMs": 120975,
+          "firstBodyMs": 1122,
+          "requirementsDelivered": true,
+          "degenerateReasoningResponses": 0,
+          "swallowedExceptionProbes": 0
+        }
+      ]
+    },
+    {
+      "pair": 4,
+      "order": [
+        "baseline",
+        "current-work"
+      ],
+      "classification": "PLANNED_PAIR_AFTER_BACKEND_RELOAD",
+      "finishedAt": "2026-11-18T22:10:17.363Z",
+      "initialPassed": 17,
+      "arms": [
+        {
+          "arm": "baseline",
+          "acceptance": "FAIL",
+          "passed": 17,
+          "total": 21,
+          "stop": "MODEL_CYCLE_LIMIT",
+          "cycles": 8,
+          "inputTokens": 275352,
+          "outputTokens": 3232,
+          "totalTokens": 278584,
+          "reasoningTokens": 1736,
+          "sourceChanges": 0,
+          "repeats": [
+            {
+              "indices": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+              ],
+              "count": 8,
+              "classification": "SAME_ACTION_OUTPUT_AND_SOURCE",
+              "redundancy": "NOT_ESTABLISHED"
+            }
+          ],
+          "elapsedMs": 119474,
+          "firstBodyMs": 263,
+          "requirementsDelivered": true,
+          "degenerateReasoningResponses": 0,
+          "swallowedExceptionProbes": 0
+        },
+        {
+          "arm": "current-work",
+          "acceptance": "FAIL",
+          "passed": 20,
+          "total": 21,
+          "stop": "MODEL_CYCLE_LIMIT",
+          "cycles": 8,
+          "inputTokens": 285243,
+          "outputTokens": 2700,
+          "totalTokens": 287943,
+          "reasoningTokens": 1452,
+          "sourceChanges": 2,
+          "repeats": [],
+          "elapsedMs": 162148,
+          "firstBodyMs": 6362,
+          "requirementsDelivered": true,
+          "degenerateReasoningResponses": 0,
+          "swallowedExceptionProbes": 1
+        }
+      ]
+    }
+  ],
+  "aggregates": {
+    "baseline": {
+      "evaluatedCompletedAttempts": 4,
+      "independentlyAcceptedTasks": 0,
+      "sumCasePasses": 68,
+      "inputTokens": 1106963,
+      "outputTokens": 12464,
+      "totalTokens": 1119427,
+      "sameProbeEightTimesArms": 3
+    },
+    "current-work": {
+      "evaluatedCompletedAttempts": 4,
+      "independentlyAcceptedTasks": 0,
+      "sumCasePasses": 74,
+      "inputTokens": 1144598,
+      "outputTokens": 15061,
+      "totalTokens": 1159659,
+      "sameProbeEightTimesArms": 2
+    }
+  },
+  "completedAttemptUsageDeltaPct": {
+    "inputTokens": 3.3998426324999054,
+    "outputTokens": 20.83600770218228,
+    "totalTokens": 3.5939815637821892
+  },
+  "originalFailedPair2": {
+    "status": "INCOMPLETE",
+    "arm": "current-work",
+    "stop": "ERROR",
+    "acceptance": "NOT_EVALUATED",
+    "providerAttempts": 1,
+    "providerUsage": "UNKNOWN_NO_FINAL_COUNTERS",
+    "baseline": "NOT_RUN",
+    "resultSha256": "058d2dd9889456f987de09bf8b64aee1ced4be287a6089b36935d8afd550beb8"
+  },
+  "primarySchedule": {
+    "baseline": {
+      "evaluated": 3,
+      "taskPasses": 0,
+      "notRun": 1
+    },
+    "cws": {
+      "evaluated": 3,
+      "taskPasses": 0,
+      "notEvaluated": 1
+    },
+    "postHocPair2": "Both arms FAIL 17/21; separate diagnostic evidence"
+  },
+  "knownModelRequests": 64,
+  "additionalFailedRequestWithUnknownUsage": 1,
+  "completeSeriesTokenCost": "UNKNOWN",
+  "integrity": {
+    "frozenInputsVerified": true,
+    "sameInitialRequestWithinEachArmAcrossFourCompletions": true,
+    "identicalInitialSources": true,
+    "originalPair1NotRerunOrDoubleCounted": true,
+    "sixRequirementsDeliveredInRequests": 64,
+    "exactPriorToolResultsInSubsequentPackets": 56,
+    "lastResultsNotSentDueToCycleLimit": 8
+  },
+  "initialRequestHashes": {
+    "baseline": [
+      "51112e7d3dffbc2049e361db30c919e7ad2f1d8fdea5acfcd6e59236733305da",
+      "51112e7d3dffbc2049e361db30c919e7ad2f1d8fdea5acfcd6e59236733305da",
+      "51112e7d3dffbc2049e361db30c919e7ad2f1d8fdea5acfcd6e59236733305da",
+      "51112e7d3dffbc2049e361db30c919e7ad2f1d8fdea5acfcd6e59236733305da"
+    ],
+    "current-work": [
+      "ccede73e214ee499ba166c84acf621ba06eec62cca5ec670e337d9e079a50038",
+      "ccede73e214ee499ba166c84acf621ba06eec62cca5ec670e337d9e079a50038",
+      "ccede73e214ee499ba166c84acf621ba06eec62cca5ec670e337d9e079a50038",
+      "ccede73e214ee499ba166c84acf621ba06eec62cca5ec670e337d9e079a50038"
+    ]
+  },
+  "delivery": [
+    {
+      "pair": 1,
+      "arm": "baseline",
+      "tool": 1,
+      "nextCycle": 2,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 1,
+      "arm": "baseline",
+      "tool": 2,
+      "nextCycle": 3,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 1,
+      "arm": "baseline",
+      "tool": 3,
+      "nextCycle": 4,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 1,
+      "arm": "baseline",
+      "tool": 4,
+      "nextCycle": 5,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 1,
+      "arm": "baseline",
+      "tool": 5,
+      "nextCycle": 6,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 1,
+      "arm": "baseline",
+      "tool": 6,
+      "nextCycle": 7,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 1,
+      "arm": "baseline",
+      "tool": 7,
+      "nextCycle": 8,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 1,
+      "arm": "current-work",
+      "tool": 1,
+      "nextCycle": 2,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 1,
+      "arm": "current-work",
+      "tool": 2,
+      "nextCycle": 3,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 1,
+      "arm": "current-work",
+      "tool": 3,
+      "nextCycle": 4,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 1,
+      "arm": "current-work",
+      "tool": 4,
+      "nextCycle": 5,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 1,
+      "arm": "current-work",
+      "tool": 5,
+      "nextCycle": 6,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 1,
+      "arm": "current-work",
+      "tool": 6,
+      "nextCycle": 7,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 1,
+      "arm": "current-work",
+      "tool": 7,
+      "nextCycle": 8,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 2,
+      "arm": "current-work",
+      "tool": 1,
+      "nextCycle": 2,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 2,
+      "arm": "current-work",
+      "tool": 2,
+      "nextCycle": 3,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 2,
+      "arm": "current-work",
+      "tool": 3,
+      "nextCycle": 4,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 2,
+      "arm": "current-work",
+      "tool": 4,
+      "nextCycle": 5,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 2,
+      "arm": "current-work",
+      "tool": 5,
+      "nextCycle": 6,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 2,
+      "arm": "current-work",
+      "tool": 6,
+      "nextCycle": 7,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 2,
+      "arm": "current-work",
+      "tool": 7,
+      "nextCycle": 8,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 2,
+      "arm": "baseline",
+      "tool": 1,
+      "nextCycle": 2,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 2,
+      "arm": "baseline",
+      "tool": 2,
+      "nextCycle": 3,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 2,
+      "arm": "baseline",
+      "tool": 3,
+      "nextCycle": 4,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 2,
+      "arm": "baseline",
+      "tool": 4,
+      "nextCycle": 5,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 2,
+      "arm": "baseline",
+      "tool": 5,
+      "nextCycle": 6,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 2,
+      "arm": "baseline",
+      "tool": 6,
+      "nextCycle": 7,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 2,
+      "arm": "baseline",
+      "tool": 7,
+      "nextCycle": 8,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 3,
+      "arm": "current-work",
+      "tool": 1,
+      "nextCycle": 2,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 3,
+      "arm": "current-work",
+      "tool": 2,
+      "nextCycle": 3,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 3,
+      "arm": "current-work",
+      "tool": 3,
+      "nextCycle": 4,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 3,
+      "arm": "current-work",
+      "tool": 4,
+      "nextCycle": 5,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 3,
+      "arm": "current-work",
+      "tool": 5,
+      "nextCycle": 6,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 3,
+      "arm": "current-work",
+      "tool": 6,
+      "nextCycle": 7,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 3,
+      "arm": "current-work",
+      "tool": 7,
+      "nextCycle": 8,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 3,
+      "arm": "baseline",
+      "tool": 1,
+      "nextCycle": 2,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 3,
+      "arm": "baseline",
+      "tool": 2,
+      "nextCycle": 3,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 3,
+      "arm": "baseline",
+      "tool": 3,
+      "nextCycle": 4,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 3,
+      "arm": "baseline",
+      "tool": 4,
+      "nextCycle": 5,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 3,
+      "arm": "baseline",
+      "tool": 5,
+      "nextCycle": 6,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 3,
+      "arm": "baseline",
+      "tool": 6,
+      "nextCycle": 7,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 3,
+      "arm": "baseline",
+      "tool": 7,
+      "nextCycle": 8,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 4,
+      "arm": "baseline",
+      "tool": 1,
+      "nextCycle": 2,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 4,
+      "arm": "baseline",
+      "tool": 2,
+      "nextCycle": 3,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 4,
+      "arm": "baseline",
+      "tool": 3,
+      "nextCycle": 4,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 4,
+      "arm": "baseline",
+      "tool": 4,
+      "nextCycle": 5,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 4,
+      "arm": "baseline",
+      "tool": 5,
+      "nextCycle": 6,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 4,
+      "arm": "baseline",
+      "tool": 6,
+      "nextCycle": 7,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 4,
+      "arm": "baseline",
+      "tool": 7,
+      "nextCycle": 8,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 4,
+      "arm": "current-work",
+      "tool": 1,
+      "nextCycle": 2,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 4,
+      "arm": "current-work",
+      "tool": 2,
+      "nextCycle": 3,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 4,
+      "arm": "current-work",
+      "tool": 3,
+      "nextCycle": 4,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 4,
+      "arm": "current-work",
+      "tool": 4,
+      "nextCycle": 5,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 4,
+      "arm": "current-work",
+      "tool": 5,
+      "nextCycle": 6,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 4,
+      "arm": "current-work",
+      "tool": 6,
+      "nextCycle": 7,
+      "exactModelResultPresent": true
+    },
+    {
+      "pair": 4,
+      "arm": "current-work",
+      "tool": 7,
+      "nextCycle": 8,
+      "exactModelResultPresent": true
+    }
+  ],
+  "orderObservation": "CWS 20/21 in both AB pairs where it ran second; CWS 17/21 in both completed BA pairs where it ran first. Cache/RNG/backend-order mechanisms not established.",
+  "limitations": [
+    "One frozen snapshot and one local model",
+    "Cache and RNG independence uncontrolled; reload split backend state",
+    "No completed independent acceptance; lower cost is not task success",
+    "Native tools only; no live lifecycle refresh, retrieval or compaction",
+    "Provider JSON delivery does not prove correct final prompt-template rendering or model interpretation"
+  ]
+}

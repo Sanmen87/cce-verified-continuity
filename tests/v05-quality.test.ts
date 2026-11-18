@@ -1,0 +1,92 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { writeFile,readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { fixture } from './helpers.ts';
+import { Workspace,sha256 } from '../packages/core/src/workspace.ts';
+import { defaultAdapters } from '../packages/core/src/native/defaults.ts';
+import { ContextQualityGuard } from '../packages/core/src/quality/guard.ts';
+import { TaskCoverageTracker,VerificationFeedback } from '../packages/core/src/quality/tracker.ts';
+import type { ContextEvidence,ContextFacts,ExplicitTaskContract,ProjectBinding } from '../packages/core/src/quality/contracts.ts';
+const git={available:false,head:null,worktreeDirty:false,statusSha256:'',diffSha256:''};
+const contract:ExplicitTaskContract={id:'task',source:'user',text:'Implement allow. Include regression checks.',requirements:[{id:'logic',clause:'Implement allow.',needs:[{id:'code',kind:'definition',symbol:'allow',path:'logic.py',representation:'full',bodyRequired:true}],checks:['regression']}]};
+const empty:ContextFacts={chunks:[],nodes:[],edges:[],graphProvenance:'unavailable'};
+test('v05 guard distinguishes preview, full verified source, missing requirements and unknown completeness',async t=>{
+  const root=await fixture(t),workspace=await Workspace.create(root),registry=defaultAdapters(),source='def allow(user):\n    return user.active\n';
+  await writeFile(path.join(root,'logic.py'),source);
+  const parsed=await registry.language('logic.py').parse('logic.py',source,sha256(source)),chunk=parsed.chunks.find(c=>c.name==='allow')!;
+  const guard=new ContextQualityGuard({workspace,allowedPaths:async()=>new Set(['logic.py']),parse:(p,s,h)=>registry.language(p).parse(p,s,h)});
+  const preview:ContextEvidence={path:'logic.py',sha256:sha256(source),startLine:chunk.startLine,endLine:chunk.endLine,chunkId:chunk.id,representation:'preview',signature:chunk.signature,docstring:chunk.docstring,members:[]};
+  const input={contract,evidence:[preview],contextText:JSON.stringify(preview),facts:empty,budgetLimit:12000,historyKnown:true,git};
+  const a=await guard.inspect(input);assert.equal(a.needCoverage['logic/code'],'PREVIEW_ONLY');assert.equal(a.recommendedAction,'expand-context');assert.equal(a.confidence,null);assert.equal(a.completeness,'UNVERIFIED');
+  const full:ContextEvidence={...preview,representation:'full',text:chunk.text};
+  const b=await guard.inspect({...input,evidence:[full],contextText:JSON.stringify(full)});assert.deepEqual(b.coveredRequirements,['logic']);assert.equal(b.structuralCoverage.ratio,1);assert.equal(b.completeness,'UNVERIFIED');
+  const absent=await guard.inspect({...input,evidence:[]});assert.deepEqual(absent.missingDefinitions,['allow']);assert.equal(absent.recommendedAction,'retrieve-more');
+  const noContract=await guard.inspect({...input,contract:undefined}as Omit<typeof input,'contract'>);assert.equal(noContract.structuralCoverage.ratio,null);
+});
+test('v05 guard rejects stale/forged sources and unknown budgets, detects duplicates and parse races',async t=>{
+  const root=await fixture(t),workspace=await Workspace.create(root),registry=defaultAdapters(),source='def allow():\n    return True\n';await writeFile(path.join(root,'logic.py'),source);
+  const e:ContextEvidence={path:'logic.py',sha256:sha256(source),startLine:1,endLine:2,representation:'full',text:source.trimEnd()};
+  const guard=new ContextQualityGuard({workspace,allowedPaths:async()=>new Set(['logic.py']),parse:(p,s,h)=>registry.language(p).parse(p,s,h)});
+  const input={contract,evidence:[e],contextText:JSON.stringify(e),facts:empty,budgetLimit:12000,historyKnown:true,git};
+  assert.equal((await guard.inspect({...input,contextText:'Only an empty context envelope'})).selectedSources.length,0);
+  assert.equal((await guard.inspect({...input,evidence:[{...e,text:'def forged(): pass'}]})).rejectedSources.length,1);
+  assert.equal((await guard.inspect({...input,evidence:[{...e,path:'../outside.py'}]})).selectedSources.length,0);
+  const duplicate=await guard.inspect({...input,evidence:[e,e]});assert.equal(duplicate.duplication.lineFraction,0.5);
+  assert.equal((await guard.inspect({...input,historyKnown:false,budgetLimit:null})).recommendedAction,'read-source');
+  assert.equal((await guard.inspect({...input,budgetLimit:0})).budget.exceeded,true);
+  await writeFile(path.join(root,'logic.py'),source+'# changed\n');assert.deepEqual((await guard.inspect(input)).staleSources,['logic.py']);
+  await writeFile(path.join(root,'logic.py'),source);
+  const racing=new ContextQualityGuard({workspace,allowedPaths:async()=>new Set(['logic.py']),parse:async(p,s,h)=>{const result=await registry.language(p).parse(p,s,h);await writeFile(path.join(root,'logic.py'),s+'# race\n');return result;}});
+  assert.deepEqual((await racing.inspect(input)).coveredRequirements,[]);
+});
+test('v05 unknown-language source can be read, but its symbols cannot be claimed as parsed definitions',async t=>{
+  const root=await fixture(t),workspace=await Workspace.create(root),registry=defaultAdapters(),source='package worker\nfunc QueueSize() int { return 7 }\n';await writeFile(path.join(root,'worker.go'),source);
+  const guard=new ContextQualityGuard({workspace,allowedPaths:async()=>new Set(['worker.go']),parse:(p,s,h)=>registry.language(p).parse(p,s,h)});
+  const task:ExplicitTaskContract={id:'unknown',source:'user',text:'Find QueueSize.',requirements:[{id:'find',clause:'Find QueueSize.',needs:[{id:'def',kind:'definition',symbol:'QueueSize',representation:'full'}],checks:[]}]};
+  const report=await guard.inspect({contract:task,evidence:[{path:'worker.go',sha256:sha256(source),startLine:1,endLine:3,representation:'file',text:source}],contextText:source,facts:empty,budgetLimit:12000,historyKnown:true,git});
+  assert.deepEqual(report.missingDefinitions,['QueueSize']);assert.equal(report.selectedSources.length,1);assert.equal(report.completeness,'UNVERIFIED');
+});
+
+test('v05 dependency coverage needs fresh static edges and both current definitions; target changes invalidate coverage',async t=>{
+  const root=await fixture(t),workspace=await Workspace.create(root),registry=defaultAdapters();
+  const files={'entry.py':'from helper import helper\ndef entry():\n    return helper()\n','helper.py':'def helper():\n    return 7\n'};
+  const chunks=[];for(const [file,text]of Object.entries(files)){await writeFile(path.join(root,file),text);chunks.push(...(await registry.language(file).parse(file,text,sha256(text))).chunks);}
+  const a=chunks.find(c=>c.name==='entry')!,b=chunks.find(c=>c.name==='helper'&&c.kind==='function')!;
+  const evidence:ContextEvidence[]=[a,b].map(c=>({path:c.path,sha256:c.fileHash,startLine:c.startLine,endLine:c.endLine,representation:'full',text:c.text}));
+  const task:ExplicitTaskContract={id:'deps',source:'user',text:'Inspect entry and its helper dependency.',requirements:[{id:'dep',clause:'Inspect entry and its helper dependency.',needs:[{id:'call',kind:'dependency',symbol:'entry',relation:'CALLS',targetSymbol:'helper',representation:'full'}],checks:[]}]};
+  const facts:ContextFacts={chunks,nodes:[a,b].map(c=>({id:c.id,name:c.name,path:c.path,kind:c.kind})),edges:[{source:a.id,target:b.id,relation:'CALLS',path:a.path,fileHash:a.fileHash,confidence:'syntax',metadata:{}}],graphProvenance:'fresh-static'};
+  const guard=new ContextQualityGuard({workspace,allowedPaths:async()=>new Set(Object.keys(files)),parse:(p,s,h)=>registry.language(p).parse(p,s,h)});
+  const input={contract:task,evidence,contextText:JSON.stringify(evidence),facts,budgetLimit:12000,historyKnown:true,git};
+  const found=await guard.inspect(input);assert.deepEqual(found.coveredRequirements,['dep']);assert.ok(found.evidenceByRequirement.dep!.some(e=>e.path==='helper.py'));
+  assert.deepEqual((await guard.inspect({...input,evidence:evidence.slice(0,1)})).coveredRequirements,[]);
+  assert.deepEqual((await guard.inspect({...input,facts:{...facts,graphProvenance:'indexed-static'}})).coveredRequirements,[]);
+  const tracker=new TaskCoverageTracker(task);tracker.applyContext(found);
+  const binding:ProjectBinding={projectId:'project',files:Object.fromEntries(Object.entries(files).map(([p,s])=>[p,sha256(s)])),git};
+  assert.equal(tracker.inspect(binding)[0]!.status,'CONTEXT_FOUND');binding.files['helper.py']=sha256('changed');assert.equal(tracker.inspect(binding)[0]!.status,'NOT_CHECKED');
+});
+test('v05 feedback requires real approved execution, binds SHA/Git, and never trusts LLM PASS or restored receipts',async t=>{
+  const root=await fixture(t),file=path.join(root,'logic.py');await writeFile(file,'def allow(): return True\n');
+  const tracker=new TaskCoverageTracker(contract);const binding=async():Promise<ProjectBinding>=>({projectId:'project',files:{'logic.py':sha256(await readFile(file,'utf8'))},git});
+  tracker.reportImplementation('logic',[{path:'logic.py',sha256:(await binding()).files['logic.py']!}]);assert.equal(tracker.inspect(await binding())[0]!.status,'IMPLEMENTED_UNVERIFIED');
+  assert.throws(()=>tracker.acceptVerification({}as never,Symbol('LLM PASS')),/actually executed/);
+  let executions=0;const run=promisify(execFile);
+  const feedback=new VerificationFeedback(tracker,binding,[{id:'regression',type:'unit-test',source:'approved node check fixture',execute:async()=>{
+    executions++;await run(process.execPath,['-e','process.exit(0)'],{windowsHide:true,shell:false});return{exitCode:0,diagnostic:'Executed approved fixture check',executionId:'node-check'};
+  }}]);
+  assert.equal((await feedback.run('regression')).status,'PASS');assert.equal(executions,1);assert.equal(tracker.inspect(await binding())[0]!.status,'VERIFIED_PASS');
+  const restored=TaskCoverageTracker.restore(tracker.snapshot(),contract);assert.equal(restored.inspect(await binding())[0]!.status,'IMPLEMENTED_UNVERIFIED');
+  const injected={...contract,text:'Injected task',requirements:[{...contract.requirements[0]!,clause:'Injected task'}]};
+  assert.throws(()=>TaskCoverageTracker.restore(tracker.snapshot(),injected),/independently confirmed/);
+  await writeFile(file,'def allow(): return False\n');assert.equal(tracker.inspect(await binding())[0]!.status,'IMPLEMENTED_UNVERIFIED');assert.deepEqual(tracker.inspect(await binding())[0]!.staleChecks,['regression']);
+  const fail=new VerificationFeedback(tracker,binding,[{id:'regression',type:'unit-test',source:'approved test adapter',execute:async()=>({exitCode:1,diagnostic:'LLM says PASS',executionId:'failed-check'})}]);
+  const receipt=await fail.run('regression');assert.equal(receipt.status,'FAIL');assert.equal(receipt.retryRetrieval[0]!.includeTests,true);assert.equal(tracker.inspect(await binding())[0]!.status,'VERIFIED_FAIL');
+  const changed=new VerificationFeedback(tracker,binding,[{id:'regression',type:'unit-test',source:'approved adapter',execute:async()=>{await writeFile(file,'# race');return{exitCode:0,diagnostic:'PASS',executionId:'race'};}}]);
+  assert.equal((await changed.run('regression')).status,'UNKNOWN');
+  const watchdog=new VerificationFeedback(tracker,binding,[{id:'regression',type:'unit-test',source:'watchdog',execute:async()=>({exitCode:137,diagnostic:'Interrupted',executionId:'timeout',termination:'watchdog'})}]);assert.equal((await watchdog.run('regression')).status,'UNKNOWN');
+  await assert.rejects(feedback.run('arbitrary-shell'),/Unapproved/);
+  assert.throws(()=>new TaskCoverageTracker({...contract,source:'oracle' as never}),/explicit/);
+  assert.throws(()=>new TaskCoverageTracker({...contract,requirements:[{...contract.requirements[0]!,clause:'Invented requirement'}]}),/explicit/);
+});

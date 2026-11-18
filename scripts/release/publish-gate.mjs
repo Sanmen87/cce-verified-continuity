@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import { read, exec, hash } from './common.mjs';
+import { validateReviewedArchives, validateReviewedTree } from './review.mjs';
+const config = await read('release/config.json'), packages = await read('release-artifacts/latest.json');
+const clean = await read('release-artifacts/clean-install.json'), audit = await read('release-artifacts/release-audit.json');
+validateReviewedArchives(config, packages, clean, process.env);
+assert.equal(audit.tree.status, 'PASS'); assert.equal(audit.history.status, 'PASS'); assert.equal(audit.licenses.review.length, 0);
+for (const pkg of packages.packages) assert.equal(hash(await fs.readFile(pkg.tarball)), pkg.sha256, 'Archive changed after validation');
+const publicTree = await read('release-artifacts/public-source.json');
+const tracked = (await exec('git', ['ls-files', '-z'], { windowsHide: true })).stdout.split('\0').filter(Boolean);
+validateReviewedTree(await Promise.all(tracked.map(async file => ({ file, sha256: hash(await fs.readFile(file)) }))), publicTree.files);
+await exec('git', ['rev-parse', '--verify', 'HEAD'], { windowsHide: true });
+await exec('git', ['diff', '--exit-code', 'HEAD'], { windowsHide: true });
+console.log('PASS: reviewed source/version/identity/archives; publication still requires explicit workflow confirmation');

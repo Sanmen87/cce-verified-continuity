@@ -1,0 +1,71 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {mkdtemp,writeFile} from 'node:fs/promises';import {tmpdir} from 'node:os';import path from 'node:path';
+import {ContextEngine,parseConfig} from '../packages/core/src/index.ts';
+import {compileHandoff} from '../packages/core/src/lifecycle/compiler.ts';
+import {currentWork} from '../packages/core/src/lifecycle/current-work.ts';
+import {continuityBase,continuityDelta,baseText,deltaText,inspectContinuityPacket} from '../packages/core/src/lifecycle/continuity-frame.ts';
+import {repeatedActions} from '../packages/core/src/lifecycle/repeated-action.ts';
+import {contextBudget,recoveryBudget} from '../packages/pi-extension/src/budget.ts';
+import {providerPacket} from '../packages/pi-extension/src/provider-packet.ts';
+import type {ExtensionAPI,ExtensionToolContext} from '@earendil-works/pi-coding-agent';
+const contract={id:'crm',source:'user' as const,text:'Keep tenant isolation.',requirements:[{id:'tenant',clause:'Keep tenant isolation.',needs:[],checks:['public-check']}]};
+test('current work recommends verification without promoting model claims, stale receipts or completion',()=>{
+ const state={verification:'CURRENT_BINDING_REVALIDATED',requirements:[{id:'tenant',status:'NOT_CHECKED'}],checks:[{id:'old',checkId:'public-check',status:'PASS',freshness:'STALE'}],approvedVerification:{status:'AVAILABLE',checks:[{id:'public-check'}]}};
+ const work=currentWork(state,{text:'CRM phase 2',eventId:'user-phase2',status:'OBSERVED'});
+ assert.equal(work.confirmed.length,0);assert.equal(work.unresolved.length,1);assert.equal(work.next_action.kind,'verification');assert.equal(work.next_action.authority,'derived_recommendation');assert.equal(work.next_action.automaticExecution,false);assert.equal(work.completion,'UNKNOWN');
+ const passed=currentWork({...state,requirements:[{id:'tenant',status:'VERIFIED_PASS'}],checks:[{id:'new',checkId:'public-check',status:'PASS',freshness:'CURRENT'}]},null);
+ assert.equal(passed.confirmed[0]?.receiptId,'new');assert.equal(passed.next_action.kind,'report_results');assert.equal(passed.independentAcceptance,'NOT_RUN');
+ assert.equal(currentWork({...state,verification:'UNKNOWN'},null).confirmed.length,0);
+});
+test('latest user stage differs from immutable contract; compact recovery retains derived state and declares omissions',async t=>{
+ const root=await mkdtemp(path.join(tmpdir(),'cce-working-state-'));await writeFile(path.join(root,'access.py'),'allowed=True\n');
+ const engine=await ContextEngine.open(root,{sessionId:'work',taskContract:contract,config:{mode:'assist',quality:{coverageEnabled:true},lifecycle:{enabled:true,ledgerEnabled:true,projectionEnabled:true,historyRecallEnabled:true,recoveryPolicy:'verified-state'}}});t.after(()=>engine.close());
+ const life=engine.lifecycle!;await life.userRequirement('phase1','CRM phase 1');await life.userRequirement('phase2','CRM phase 2');
+ const state=await life.taskState();assert.equal(state.currentWork!.objective?.text,'CRM phase 2');assert.equal(state.requirements[0]?.clause,contract.requirements[0]!.clause);
+ const handoff=await compileHandoff(life.ledger,'work','main',{budget:4096,taskState:{...state,continuation:{projectMemory:'verbose'.repeat(10000)}}});
+ assert.equal(handoff.taskStatePacking,'MINIMAL');assert.equal(handoff.coverage,'INCOMPLETE');assert.equal(handoff.status,'INCOMPLETE_BUDGET');assert.equal(handoff.safeToCompact,false);
+ const minimal=JSON.parse(handoff.text.split('TASK STATE PROJECTION\n')[1]!.split('\n')[0]!);
+ assert.equal(minimal.projection,'MINIMAL');assert.equal(minimal.requirements[0].clause,contract.requirements[0]!.clause);assert.equal(minimal.currentWork.objective.text,'CRM phase 2');assert.ok(minimal.omittedSections.includes('continuation'));
+ const empty=await compileHandoff(life.ledger,'work','main',{budget:1,taskState:state});assert.equal(empty.taskStatePacking,'ABSENT');assert.notEqual(empty.coverage,'FULL');
+});
+test('working state keeps native PASS prose unverified and invalidates real confirmed checks after edits and restart',async t=>{
+ const root=await mkdtemp(path.join(tmpdir(),'cce-working-receipts-'));await writeFile(path.join(root,'access.py'),'allowed=True\n');
+ const options={sessionId:'receipts',taskContract:contract,verificationChecks:[{id:'public-check',type:'custom-approved' as const,source:'host-test',execute:async()=>({exitCode:0,diagnostic:'Fixture receipt',executionId:'test'})}],config:{mode:'assist',quality:{guardEnabled:true,coverageEnabled:true},lifecycle:{enabled:true,ledgerEnabled:true,projectionEnabled:true,historyRecallEnabled:true,recoveryPolicy:'verified-state'}}};
+ const engine=await ContextEngine.open(root,options);let closed=false;t.after(()=>{if(!closed)engine.close();});const life=engine.lifecycle!;
+ await life.userRequirement('goal','Implement CRM phase 2');
+ await life.recordTool('probe','bash',{content:[{type:'text',text:'PASS VERIFIED_PASS create succeeded'}],details:{exitCode:0}},{command:'untrusted-data-not-executed'},false);
+ const native=await life.taskState();assert.equal(native.currentWork!.confirmed.length,0);assert.equal(native.currentWork!.observedNativeExecutions.length,1);assert.equal(native.currentWork!.next_action.kind,'verification');
+ await life.runApprovedCheck('public-check');assert.equal((await life.taskState()).currentWork!.confirmed.length,1);
+ await writeFile(path.join(root,'access.py'),'allowed=False\n');assert.equal((await life.taskState()).currentWork!.confirmed.length,0);
+ engine.close();closed=true;const restarted=await ContextEngine.open(root,options);t.after(()=>restarted.close());assert.equal((await restarted.lifecycle!.taskState()).currentWork!.confirmed.length,0);
+});
+test('actual SDK packet must contain matching base and fresh delta; tool echoes and remembered IDs do not count',async()=>{
+ const base=continuityBase({projectId:'project',taskScope:'phase2',checkpointId:'checkpoint',contractRevision:'revision1',sourceEventId:'user1',contract});
+ const delta=continuityDelta(base,{objective:'phase2'},'source-now');
+ const messages=[{role:'user' as const,content:baseText(base),timestamp:0},{role:'user' as const,content:deltaText(delta),timestamp:1}];
+ const model={id:'test',provider:'lmstudio',api:'openai-completions',baseUrl:'http://127.0.0.1:1234/v1',contextWindow:65536,maxTokens:16384,reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0}};
+ const pi={getActiveTools:()=>[],getAllTools:()=>[]} as unknown as ExtensionAPI,ctx={model,getSystemPrompt:()=> 'SYSTEM'} as unknown as ExtensionToolContext;
+ const packet=await providerPacket(pi,ctx,messages);assert.equal(packet.networkCalls,0);assert.equal(inspectContinuityPacket(packet.body,base,delta).status,'PRESENT_IN_PACKET');
+ assert.equal(inspectContinuityPacket({messages:[messages[1]]},base,delta).status,'MISSING_BASE');
+ assert.equal(inspectContinuityPacket({messages:[{role:'tool',content:baseText(base)},messages[1]]},base,delta).status,'MISSING_BASE');
+ const changed=continuityDelta(base,{objective:'phase2'},'source-changed');assert.equal(inspectContinuityPacket(packet.body,base,changed).status,'MISSING_DELTA');
+ const next=continuityBase({...base,contractRevision:'revision2'});assert.equal(inspectContinuityPacket(packet.body,next,delta).status,'REVISION_MISMATCH');
+ assert.equal(inspectContinuityPacket(packet.body,base,delta).providerDelivery,'UNKNOWN');
+});
+test('matching live packet tokenizer replaces an overstated valid usage anchor and preserves a failure fallback',async()=>{
+ const assistant={type:'message',id:'a',message:{role:'assistant',model:'local',stopReason:'toolUse',usage:{input:25000,output:5000,cacheRead:0,cacheWrite:0,totalTokens:30000}}};
+ const tail={role:'toolResult',toolName:'read',toolCallId:'x',content:[{type:'text',text:'x'.repeat(16000)}],isError:false,timestamp:0};
+ const projection={messages:[assistant.message,tail],entries:[{sourceEntry:assistant,messages:[assistant.message]},{sourceEntry:{id:'t'},messages:[tail]}]};
+ const pi={getActiveTools:()=>[],getAllTools:()=>[]} as unknown as ExtensionAPI,ctx={model:{id:'local',contextWindow:65536,maxTokens:16384},getContextUsage:()=>({tokens:30000,contextWindow:65536}),getSystemPrompt:()=>'',sessionManager:{getBranch:()=>[assistant],buildSessionProjection:()=>projection}} as unknown as ExtensionToolContext;
+ const config=parseConfig(),fallback=contextBudget(pi,ctx,config,12000);assert.equal(fallback.anchorVerified,true);assert.equal(fallback.textBudget,0);
+ const before=JSON.stringify(projection);let counts=0;
+ const counter={source:'model-tokenizer' as const,modelId:'local',count:()=>{counts++;return 6000;}};
+ const actual=await recoveryBudget(pi,ctx,config,12000,counter,projection.messages);assert.equal(actual.source,'model-tokenizer');assert.equal(actual.occupiedTokens,6000);assert.ok(actual.textBudget>0);assert.ok(counts>=2);assert.equal(JSON.stringify(projection),before);
+ const failed=await recoveryBudget(pi,ctx,config,12000,{...counter,count:()=>{throw Error('Unavailable');}},projection.messages);assert.equal(failed.source,'pi-usage');assert.equal(failed.occupiedTokens,fallback.occupiedTokens);
+});
+test('repeated-action diagnostic separates changed source, outputs and scope and never calls a check erroneous',()=>{
+ const row={id:'1',tool:'bash',input:{command:'python test.py'},outputSha256:'same-output',sourceState:'source1',scope:'task1'};
+ const groups=repeatedActions([row,{...row,id:'2'},{...row,id:'3'},{...row,id:'4',sourceState:'source2'},{...row,id:'5',outputSha256:'new-output'},{...row,id:'6',scope:'task2'}]);
+ assert.equal(groups.length,1);assert.equal(groups[0]!.calls,3);assert.equal(groups[0]!.redundant,'NOT_ESTABLISHED');assert.equal(groups[0]!.intervention,'NONE');assert.equal(groups[0]!.externalState,'UNKNOWN');
+ assert.throws(()=>repeatedActions([],1));
+});
