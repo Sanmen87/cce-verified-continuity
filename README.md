@@ -42,7 +42,7 @@ Default: **observe-only**. Loading the extension keeps native prompts/history/to
 pi -e ./packages/pi-extension
 ```
 
-For explicit assist and verified recovery, select a trusted configuration with `CCE_CONFIG`; see QUICKSTART. History and tool-call/result pairs are preserved. CWS is included within enabled lifecycle; disable its recommendation projection with `lifecycle.currentWorkEnabled: false` without disabling the contract or Ledger.
+For explicit assist and verified recovery, select a trusted configuration with `CCE_CONFIG`; see QUICKSTART. [Пошаговая настройка lifecycle на русском](docs/lifecycle-setup.ru.md) includes a ready-to-use config, Windows/Linux launch commands, diagnostics and disable instructions. History and tool-call/result pairs are preserved. CWS is included within enabled lifecycle; disable its recommendation projection with `lifecycle.currentWorkEnabled: false` without disabling the contract or Ledger.
 
 | Included in alpha | Scope |
 |---|---|

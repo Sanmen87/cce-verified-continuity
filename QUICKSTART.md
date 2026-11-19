@@ -65,6 +65,8 @@ Core and core+MCP are checked with strict NodeNext declarations and `skipLibChec
 
 ## Explicit assist and recovery
 
+For a step-by-step explanation in Russian, see the [lifecycle setup guide](https://github.com/Sanmen87/cce-verified-continuity/blob/main/docs/lifecycle-setup.ru.md), including a downloadable config, startup checks, compaction diagnostics and how to disable recovery.
+
 Create a trusted `cce.json` in your project:
 
 ```json
@@ -101,10 +103,10 @@ Bash:
 CCE_CONFIG="$PWD/cce.json" pi -e ./node_modules/@sanmen87/pi-extension
 ```
 
-Reload the extension after changing configuration. `CCE_CONFIG` is read only when explicitly selected by the host; untrusted project configuration is not automatically executed.
+Restart Pi from the terminal where `CCE_CONFIG` is set; an already running Pi does not inherit environment changes from another terminal. For edits to the already selected file, `/reload` also reloads the extension. `CCE_CONFIG` is read only when explicitly selected by the host; untrusted project configuration is not automatically executed.
 
 - Disable CWS only: set `lifecycle.currentWorkEnabled` to `false`. Requirements, provenance and Ledger stay available.
-- Return to the default: unset `CCE_CONFIG` and reload Pi. Lifecycle is off and mode is observe-only.
+- Return to the default: exit Pi, unset `CCE_CONFIG` in the launching terminal, then start Pi again. Lifecycle is off and mode is observe-only.
 - Vector retrieval stays off unless explicitly configured with a local embedding endpoint and model. It is not needed for AST/FTS/graph.
 - Verification becomes authoritative only through registered host-approved checks bound to current sources. Plain shell output and model claims remain observations.
 

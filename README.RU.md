@@ -37,7 +37,7 @@ pi -e ./packages/pi-extension
 
 В PowerShell используйте `npm.cmd` и `pi.cmd`, если execution policy блокирует `.ps1` shims. Инструкция установки архивов и настройки: [QUICKSTART](QUICKSTART.md).
 
-По умолчанию включён **observe-only**, lifecycle выключен. Для assist/recovery нужно явно выбрать доверенный `CCE_CONFIG`. История и пары tool-call/tool-result сохраняются. CWS включён внутри включённого lifecycle; `lifecycle.currentWorkEnabled: false` отключает его рекомендации, сохраняя контракт и обязательный recovery.
+По умолчанию включён **observe-only**, lifecycle выключен. Для assist/recovery нужно явно выбрать доверенный `CCE_CONFIG`. [Пошаговый гайд по включению lifecycle](docs/lifecycle-setup.ru.md): готовый конфиг, запуск на Windows/Linux, проверка подключения, compaction и отключение. История и пары tool-call/tool-result сохраняются. CWS включён внутри включённого lifecycle; `lifecycle.currentWorkEnabled: false` отключает его рекомендации, сохраняя контракт и обязательный recovery.
 
 | Модуль | Назначение и границы |
 |---|---|

@@ -1,0 +1,19 @@
+{
+  "mode": "assist",
+  "assist": { "strategy": "combined" },
+  "retrieval": { "backend": "hybrid-native" },
+  "hybrid": { "enableVector": false },
+  "quality": { "coverageEnabled": true, "guardEnabled": true },
+  "lifecycle": {
+    "enabled": true,
+    "ledgerEnabled": true,
+    "projectionEnabled": true,
+    "historyRecallEnabled": true,
+    "capabilityContractEnabled": true,
+    "recoveryPolicy": "verified-state",
+    "compactionMode": "deterministic",
+    "handoffBudgetTokens": 12000,
+    "recoveryReserveTokens": 2048,
+    "currentWorkEnabled": true
+  }
+}
