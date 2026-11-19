@@ -22,6 +22,22 @@ pi -e ./packages/pi-extension
 
 Use `npm.cmd` and `pi.cmd` in PowerShell if execution policy blocks `.ps1` shims. No policy change is required. Pi runs its own coding tools; review its shell setup for your platform.
 
+## Install the alpha from npm
+
+For a new or existing Node.js project, install only the packages you need. To install all three at the reviewed alpha version:
+
+```sh
+npm install --ignore-scripts @sanmen87/core@0.1.0-alpha.1 @sanmen87/pi-extension@0.1.0-alpha.1 @sanmen87/mcp@0.1.0-alpha.1
+```
+
+Core alone needs only `@sanmen87/core@0.1.0-alpha.1`. The `alpha` distribution tag selects the current experimental alpha; pin an exact version for reproducible use. No stable `latest` release is implied. The Pi adapter still requires an installed Pi host:
+
+```sh
+pi -e ./node_modules/@sanmen87/pi-extension
+```
+
+The source-checkout `demo:continuity` script lives in the GitHub repository, not inside npm packages. For verified lifecycle opt-in, use the configuration below.
+
 ## Install the built archives in another project
 
 Build with `npm run release:pack`. Copy the three archives listed in `release-artifacts/latest.json` into a clean directory, then install them together, using the confirmed @sanmen87 scope:

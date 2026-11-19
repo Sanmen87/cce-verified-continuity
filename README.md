@@ -32,7 +32,7 @@ node dist/packages/core/src/cli.js status .
 
 The development workspaces are private and expose source TypeScript. `npm run release:pack` creates the actual distributable packages: compiled ESM, declarations, explicit exports, bundled grammar assets and license notices. `npm run release:clean-install` installs those archives in independent temporary projects and checks their runtime, types and Pi loader.
 
-Package identifiers use the owner-confirmed `@sanmen87` npm scope. The [GitHub repository](https://github.com/Sanmen87/cce-verified-continuity) is public; **npm packages are not published yet**. Use source or the built archives until the reviewed alpha is published; see [publishing](release/docs/publishing.md).
+Package identifiers use the owner-confirmed `@sanmen87` npm scope. The [GitHub repository](https://github.com/Sanmen87/cce-verified-continuity) is public. The alpha version is `0.1.0-alpha.1`, distributed with the `alpha` tag. See [npm installation](QUICKSTART.md#install-the-alpha-from-npm) or use source/built archives; release preparation is described in [publishing](release/docs/publishing.md).
 
 ## Behavior and opt-in
 
