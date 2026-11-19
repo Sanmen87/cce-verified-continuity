@@ -30,7 +30,7 @@ For a new or existing Node.js project, install only the packages you need. To in
 npm install --ignore-scripts @sanmen87/core@0.1.0-alpha.1 @sanmen87/pi-extension@0.1.0-alpha.1 @sanmen87/mcp@0.1.0-alpha.1
 ```
 
-Core alone needs only `@sanmen87/core@0.1.0-alpha.1`. The `alpha` distribution tag selects the current experimental alpha; pin an exact version for reproducible use. No stable `latest` release is implied. The Pi adapter still requires an installed Pi host:
+Core alone needs only `@sanmen87/core@0.1.0-alpha.1`. The `alpha` distribution tag selects the current experimental alpha; pin an exact version for reproducible use. During the first publication npm also assigned a `latest` alias to this prerelease; that alias does not make it stable. Use `@alpha` or the exact version explicitly. The Pi adapter still requires an installed Pi host:
 
 ```sh
 pi -e ./node_modules/@sanmen87/pi-extension
