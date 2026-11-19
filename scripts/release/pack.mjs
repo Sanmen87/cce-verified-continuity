@@ -61,7 +61,7 @@ for (const name of ['core', 'pi-extension', 'mcp']) {
  packages.push({ name: manifest.name, version: manifest.version, tarball, sha256: hash(await fs.readFile(tarball)), manifest, dryRun: dry, packed });
 }
 const result = { at: new Date().toISOString(), version: config.version, scope, repository, status: 'PACKED_NOT_PUBLISHED', packages,
- publicPublishingBlockers: [...(scope === '@cce' ? ['Npm scope ownership is not confirmed; set CCE_RELEASE_SCOPE to an owned scope'] : []), ...(!repository ? ['Set CCE_RELEASE_REPOSITORY before provenance/publishing'] : [])],
+ publicPublishingBlockers: [...(config.registryIdentityStatus !== 'CONFIRMED' || scope !== config.scope ? ['Npm scope must match the owner-confirmed release configuration'] : []), ...(!repository ? ['Set CCE_RELEASE_REPOSITORY before provenance/publishing'] : [])],
  api: { public: 'Package root exports and documented ContextEngine API', adapterSupport: [...internal].sort().map(module => './internal/' + module), stability: 'Internal subpaths support bundled adapters; unstable throughout alpha' } };
 await write(output + '/manifest.json', result); await write('release-artifacts/latest.json', result);
 console.log(JSON.stringify({ status: result.status, packages: packages.map(pkg => ({ name: pkg.name, tarball: pkg.tarball, files: pkg.packed.files.length })), blockers: result.publicPublishingBlockers }));

@@ -20,6 +20,7 @@
     "test:public": "node scripts/release/public-tests.mjs",
     "test:evaluation": "node evaluation/scripts/verify.mjs",
     "test:release": "node --test scripts/release/*.test.mjs",
+    "demo:continuity": "node --experimental-strip-types examples/continuity/run.mjs",
     "typecheck": "tsc --noEmit",
     "build": "tsc -p tsconfig.build.json && node scripts/copy-assets.mjs",
     "smoke:pi": "node --experimental-strip-types scripts/pi-smoke.ts",

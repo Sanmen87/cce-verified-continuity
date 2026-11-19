@@ -24,18 +24,18 @@ Use `npm.cmd` and `pi.cmd` in PowerShell if execution policy blocks `.ps1` shims
 
 ## Install the built archives in another project
 
-Build with `npm run release:pack`. Copy the three archives listed in `release-artifacts/latest.json` into a clean directory, then install them together, for example with the default provisional scope:
+Build with `npm run release:pack`. Copy the three archives listed in `release-artifacts/latest.json` into a clean directory, then install them together, using the confirmed @sanmen87 scope:
 
 ```sh
 npm init -y
-npm install --ignore-scripts ./cce-core-0.1.0-alpha.1.tgz ./cce-pi-extension-0.1.0-alpha.1.tgz ./cce-mcp-0.1.0-alpha.1.tgz
-pi -e ./node_modules/@cce/pi-extension
+npm install --ignore-scripts ./sanmen87-core-0.1.0-alpha.1.tgz ./sanmen87-pi-extension-0.1.0-alpha.1.tgz ./sanmen87-mcp-0.1.0-alpha.1.tgz
+pi -e ./node_modules/@sanmen87/pi-extension
 ```
 
 Pi and TypeBox are supplied by the host. Their `*` peers are optional to prevent npm from implicitly installing a second coding agent; explicitly install Pi 1.5.0 if you do not already have a working host. For standalone programmatic adapter imports, provide the host packages in the consumer project. Core alone requires neither Pi nor its SDKs.
 
 ```js
-import { ContextEngine } from '@cce/core';
+import { ContextEngine } from '@sanmen87/core';
 const engine = await ContextEngine.open('.');
 try {
   const found = await engine.searchCode('MyFunction');
@@ -43,7 +43,7 @@ try {
 } finally { engine.close(); }
 ```
 
-Node is ESM. Declaration files are included; TypeScript consumers need their normal Node.js types. Adapter-support `@cce/core/internal/*` exports are unstable during alpha.
+Node is ESM. Declaration files are included; TypeScript consumers need their normal Node.js types. Adapter-support `@sanmen87/core/internal/*` exports are unstable during alpha.
 
 Core and core+MCP are checked with strict NodeNext declarations and `skipLibCheck:false`. The tested Pi host currently has upstream TS1543 errors in generated provider JSON declarations; Pi TypeScript consumers need `skipLibCheck:true` until the host fixes those declarations. Application `strict` remains enabled. The clean-install report records this exception rather than reporting a fully strict host declaration pass.
 
@@ -76,13 +76,13 @@ PowerShell:
 
 ```powershell
 $env:CCE_CONFIG = (Resolve-Path ./cce.json).Path
-pi -e ./node_modules/@cce/pi-extension
+pi -e ./node_modules/@sanmen87/pi-extension
 ```
 
 Bash:
 
 ```sh
-CCE_CONFIG="$PWD/cce.json" pi -e ./node_modules/@cce/pi-extension
+CCE_CONFIG="$PWD/cce.json" pi -e ./node_modules/@sanmen87/pi-extension
 ```
 
 Reload the extension after changing configuration. `CCE_CONFIG` is read only when explicitly selected by the host; untrusted project configuration is not automatically executed.

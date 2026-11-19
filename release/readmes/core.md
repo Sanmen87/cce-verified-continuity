@@ -3,7 +3,7 @@
 Local AST/FTS/graph, bounded context, source hashes, checkpoints and verified task state. Compiled ESM and TypeScript declarations are included. Requires Node >=22.19.0, Git and ripgrep; no Pi or model download.
 
 ```js
-import { ContextEngine } from '@cce/core';
+import { ContextEngine } from '@sanmen87/core';
 const engine = await ContextEngine.open('.');
 try { console.log(await engine.searchCode('MyFunction')); } finally { engine.close(); }
 ```

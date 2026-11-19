@@ -18,6 +18,7 @@ const checks = [];
 for (const [name, args] of [
  ['typecheck', [npmCli, 'run', 'typecheck']], ['public-tests', [npmCli, 'run', 'test:public']], ['release-tests', [npmCli, 'run', 'test:release']],
  ['evaluation-tests', [npmCli, 'run', 'test:evaluation']],
+ ['continuity-demo', [npmCli, 'run', 'demo:continuity']],
  ['build', [npmCli, 'run', 'build']], ['pi-smoke', [npmCli, 'run', 'smoke:pi']], ['pack', ['scripts/release/pack.mjs']], ['clean-install', [npmCli, 'run', 'release:clean-install']],
 ]) {
  console.log('CHECK ' + name);

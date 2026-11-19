@@ -7,7 +7,7 @@ try {
  await exec('git', ['init', '--quiet'], { windowsHide: true }); await exec('git', ['add', '.'], { windowsHide: true });
  await exec('git', ['-c', 'user.name=CCE Release Test', '-c', 'user.email=cce@example.invalid', '-c', 'core.hooksPath=/dev/null', 'commit', '--quiet', '-m', 'Reviewed public source smoke'], { windowsHide: true });
  const commands = [
-  ['ci', '--ignore-scripts', '--no-audit', '--no-fund'], ['run', 'typecheck'], ['run', 'test:public'], ['run', 'test:release'], ['run', 'test:evaluation'],
+  ['ci', '--ignore-scripts', '--no-audit', '--no-fund'], ['run', 'typecheck'], ['run', 'test:public'], ['run', 'test:release'], ['run', 'test:evaluation'], ['run', 'demo:continuity'],
   ['run', 'build'], ['run', 'smoke:pi'], ['run', 'release:stage'], ['run', 'release:audit'], ['run', 'release:pack'], ['run', 'release:clean-install'],
  ];
  for (const [index, args] of commands.entries()) {

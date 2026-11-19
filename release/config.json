@@ -1,8 +1,8 @@
 {
   "version": "0.1.0-alpha.1",
-  "scope": "@cce",
+  "scope": "@sanmen87",
   "repository": "https://github.com/Sanmen87/cce-verified-continuity",
-  "registryIdentityStatus": "UNCONFIRMED_DO_NOT_PUBLISH",
+  "registryIdentityStatus": "CONFIRMED",
   "node": ">=22.19.0",
   "piTestedVersion": "1.5.0"
 }
