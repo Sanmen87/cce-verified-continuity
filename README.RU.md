@@ -48,7 +48,7 @@ pi -e ./packages/pi-extension
 | CWS / Action Continuity | Детерминированная рекомендация следующего действия; не даёт разрешения на исполнение и не гарантирует отсутствие цикла |
 | Vector retrieval | Experimental, выключен по умолчанию; нужен явно настроенный локальный endpoint/model, улучшение русского поиска не заявлено |
 
-В alpha.2 разделены [наблюдения процесса/вывода и trusted verification](docs/shell-evidence-validation.md), добавлен аудит каждого наблюдаемого recovery packet и сохранены UNKNOWN/STALE. [Диагностика A→B на Pi 1.5](docs/pi15-candidate-smoke-results.md) дала независимо принятый код, но завершилась по watchdog. Compaction и завершение работы агентом проверяются отдельно; этот результат не означает полного workflow PASS или доказанной экономии токенов.
+В alpha.2 разделены [наблюдения процесса/вывода и trusted verification](docs/shell-evidence-validation.md), добавлен аудит каждого наблюдаемого recovery packet и сохранены UNKNOWN/STALE. [Диагностика A→B на Pi 1.5](docs/pi15-candidate-smoke-results.md) дала независимо принятый код, но завершилась по watchdog. [Compaction и завершение работы агентом](docs/pi15-resume-smokes-results.md) проверяются отдельно; этот результат не означает полного workflow PASS или доказанной экономии токенов.
 
 ## Эксперименты и результаты
 

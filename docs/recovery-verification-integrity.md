@@ -1,5 +1,7 @@
 # Recovery / Verification Integrity — итерация 21 ноября 2026
 
+Исторический отчёт первоначального этапа этой итерации; численные проверки и NOT RUN ниже относятся к моменту его подготовки. Последующие shell-исправления и suite 248/248 описаны в [shell validation](shell-evidence-validation.md), кандидат A→B — в [отчёте](pi15-candidate-smoke-results.md), реальные compaction/B follow-ups — в [отдельных результатах](pi15-resume-smokes-results.md). Alpha.1 остаётся неизменной; текущий кандидат — alpha.2.
+
 Статус: runtime-исправления в рабочем дереве, deterministic regression PASS. Это **не обновление уже опубликованной `0.1.0-alpha.1`** и не новый coding benchmark. Версия workspace пока сохранена; для публикации исправлений нужен отдельный prerelease. Нативные настройки Pi и модели, observe-only default, история и hidden acceptance не изменены.
 
 ## Аудит исходного B v2

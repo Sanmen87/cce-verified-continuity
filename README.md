@@ -55,7 +55,7 @@ For explicit assist and verified recovery, select a trusted configuration with `
 
 Core packages: `@sanmen87/core`, `@sanmen87/pi-extension`, `@sanmen87/mcp`. The MCP adapter provides read-only retrieval and logs; it does not implement Pi lifecycle.
 
-Alpha.2 reliability work separates [process/output evidence and trusted verification](docs/shell-evidence-validation.md), audits each observed recovery packet, and preserves unknown/stale states. The [Pi 1.5 candidate A-to-B diagnostic](docs/pi15-candidate-smoke-results.md) produced independently accepted code but ended at its watchdog; compaction and agent completion are separate checks. See the recorded limits before treating the result as a completed workflow or a token-savings claim.
+Alpha.2 reliability work separates [process/output evidence and trusted verification](docs/shell-evidence-validation.md), audits each observed recovery packet, and preserves unknown/stale states. The [Pi 1.5 candidate A-to-B diagnostic](docs/pi15-candidate-smoke-results.md) produced independently accepted code but ended at its watchdog; [compaction and agent completion](docs/pi15-resume-smokes-results.md) are separate checks. See the recorded limits before treating the result as a completed workflow or a token-savings claim.
 
 ## Evaluation results
 
