@@ -6,6 +6,8 @@
 - Separate process/output observations; exit-zero tracebacks cannot produce PASS under the legacy approved-check policy. Registered check adapters can opt into explicit structured outcomes.
 - Regression coverage for final SDK request bodies, downstream recovery removal, budget boundaries and fresh A-to-B continuation. See [validation](docs/recovery-verification-integrity.md).
 - A published Pi 1.5.0 live continuity smoke is planned separately; these fixes are not included in npm `0.1.0-alpha.1`.
+- Unknown native exit metadata now remains PROCESS_STATUS_UNKNOWN while explicit test failures and diagnostic-only tracebacks are represented independently. Expected-exception approved checks may use structured outcomes; shell output never creates a trusted receipt.
+- A candidate Pi 1.5.0 A-to-B diagnostic delivered recovery in 26/26 transport packets: A passed 16/16; the unchanged partial B passed 21/21 post-hoc, while the primary run remained STOPPED at its watchdog. Real compaction and workflow-completion follow-ups are reported separately.
 
 ## 0.1.0-alpha.1 — 2026-11-19
 

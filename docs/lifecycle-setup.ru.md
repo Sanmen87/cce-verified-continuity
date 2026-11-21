@@ -1,6 +1,6 @@
 # Как включить lifecycle CCE в Pi
 
-Руководство для **CCE 0.1.0-alpha.1 и Pi 1.5.0**. Lifecycle сохраняет требования пользователя и историю действий, готовит ограниченный handoff при compaction и восстанавливает обязательное состояние перед продолжением работы. Подробную историю модель запрашивает отдельно. Установка расширения сама по себе этого не включает: по умолчанию CCE работает в `observe-only`, lifecycle выключен.
+Руководство для **CCE 0.1.0-alpha.2 и Pi 1.5.0**. Lifecycle сохраняет требования пользователя и историю действий, готовит ограниченный handoff при compaction и восстанавливает обязательное состояние перед продолжением работы. Подробную историю модель запрашивает отдельно. Установка расширения сама по себе этого не включает: по умолчанию CCE работает в `observe-only`, lifecycle выключен.
 
 ## 1. Подготовить Pi
 
@@ -73,14 +73,14 @@ pi --version
 
 ```powershell
 $env:CCE_CONFIG = (Resolve-Path ./cce.lifecycle.json).Path
-pi.cmd -e npm:@sanmen87/pi-extension@0.1.0-alpha.1
+pi.cmd -e npm:@sanmen87/pi-extension@0.1.0-alpha.2
 ```
 
 В Bash на Linux/macOS:
 
 ```sh
 export CCE_CONFIG="$PWD/cce.lifecycle.json"
-pi -e npm:@sanmen87/pi-extension@0.1.0-alpha.1
+pi -e npm:@sanmen87/pi-extension@0.1.0-alpha.2
 ```
 
 Путь может содержать пробелы. `CCE_CONFIG` — переменная окружения процесса, а не поле в `settings.json` Pi. Уже запущенный Pi не получит переменную из другого терминала. Для первого включения и после смены выбранного файла закройте Pi и запустите заново этими командами. Если тот же файл уже выбран, после его редактирования можно выполнить `/reload`; перезапуск также подходит.
@@ -155,14 +155,14 @@ PowerShell:
 
 ```powershell
 Remove-Item Env:CCE_CONFIG -ErrorAction SilentlyContinue
-pi.cmd -e npm:@sanmen87/pi-extension@0.1.0-alpha.1
+pi.cmd -e npm:@sanmen87/pi-extension@0.1.0-alpha.2
 ```
 
 Bash:
 
 ```sh
 unset CCE_CONFIG
-pi -e npm:@sanmen87/pi-extension@0.1.0-alpha.1
+pi -e npm:@sanmen87/pi-extension@0.1.0-alpha.2
 ```
 
 Это не удаляет `.context-engine/` и сохранённые сессии. Если сторонний host передаёт CCE конфиг программно, менять нужно его настройки: такой конфиг имеет приоритет над `CCE_CONFIG`.

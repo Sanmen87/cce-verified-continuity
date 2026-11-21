@@ -7,6 +7,7 @@ const directory = 'release-artifacts/source-' + new Date().toISOString().replace
 const exact = ['package.json', 'package-lock.json', 'tsconfig.json', 'tsconfig.build.json', 'LICENSE', 'NOTICE', '.gitignore', '.gitattributes', 'README.RU.md', 'QUICKSTART.md', 'CHANGELOG.md', 'scripts/copy-assets.mjs', 'scripts/pi-smoke.ts'];
 exact.push('docs/lifecycle-setup.ru.md');
 exact.push('docs/recovery-verification-integrity.md', 'docs/pi15-continuity-smoke-protocol.md');
+exact.push('docs/pi15-candidate-smoke-run.md', 'docs/pi15-candidate-smoke-results.md', 'docs/pi15-resume-smokes-protocol.md', 'docs/shell-evidence-validation.md');
 const trees = ['packages', 'release', 'scripts/release', '.github/workflows', 'evaluation', 'examples/continuity', 'examples/lifecycle'];
 const files = [...exact];
 for (const tree of trees) for (const file of await walk(tree)) files.push(tree + '/' + file);

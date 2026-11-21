@@ -27,10 +27,10 @@ Use `npm.cmd` and `pi.cmd` in PowerShell if execution policy blocks `.ps1` shims
 For a new or existing Node.js project, install only the packages you need. To install all three at the reviewed alpha version:
 
 ```sh
-npm install --ignore-scripts @sanmen87/core@0.1.0-alpha.1 @sanmen87/pi-extension@0.1.0-alpha.1 @sanmen87/mcp@0.1.0-alpha.1
+npm install --ignore-scripts @sanmen87/core@0.1.0-alpha.2 @sanmen87/pi-extension@0.1.0-alpha.2 @sanmen87/mcp@0.1.0-alpha.2
 ```
 
-Core alone needs only `@sanmen87/core@0.1.0-alpha.1`. The `alpha` distribution tag selects the current experimental alpha; pin an exact version for reproducible use. During the first publication npm also assigned a `latest` alias to this prerelease; that alias does not make it stable. Use `@alpha` or the exact version explicitly. The Pi adapter still requires an installed Pi host:
+Core alone needs only `@sanmen87/core@0.1.0-alpha.2`. The `alpha` distribution tag selects the current experimental alpha; pin an exact version for reproducible use. The `latest` tag may still point to an earlier prerelease; distribution tags do not make an alpha stable. Use `@alpha` or the exact version explicitly. The Pi adapter still requires an installed Pi host:
 
 ```sh
 pi -e ./node_modules/@sanmen87/pi-extension
@@ -44,7 +44,7 @@ Build with `npm run release:pack`. Copy the three archives listed in `release-ar
 
 ```sh
 npm init -y
-npm install --ignore-scripts ./sanmen87-core-0.1.0-alpha.1.tgz ./sanmen87-pi-extension-0.1.0-alpha.1.tgz ./sanmen87-mcp-0.1.0-alpha.1.tgz
+npm install --ignore-scripts ./sanmen87-core-0.1.0-alpha.2.tgz ./sanmen87-pi-extension-0.1.0-alpha.2.tgz ./sanmen87-mcp-0.1.0-alpha.2.tgz
 pi -e ./node_modules/@sanmen87/pi-extension
 ```
 

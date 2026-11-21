@@ -43,7 +43,7 @@ export async function projectTaskState(life: ContextLifecycle, verificationAcces
     if(receipt?.status==='FAIL'&&receipt.id===detail.receiptId)classification='CURRENT_CHECK_FAILURE';
     if(receipt?.status==='PASS'&&executions.some(event=>event.sequence>e.sequence&&event.detail.type==='CCE_APPROVED_CHECK'&&event.detail.receiptId===receipt.id&&event.detail.contractSha256===tracker?.contractSha256))classification='HISTORICAL_CHECK_PASSED';
     // The full record remains in the ledger; old imperative nextAction text is not repeated as current work.
-    if(detail.status==='TOOL_ERROR_OBSERVED'||detail.status==='TOOL_OUTPUT_CONTRADICTION'){
+    if(['TOOL_ERROR_OBSERVED','TOOL_OUTPUT_CONTRADICTION','TOOL_DIAGNOSTIC_OBSERVED'].includes(String(detail.status))){
       const {nextAction:_,...passive}=detail;display.text=JSON.stringify(passive).slice(0,1024);
     }
     return{eventId:e.id,origin:e.origin,...display,authority:e.origin==='agent'?'MODEL_CLAIM':'OBSERVED_EVENT',historical:true,

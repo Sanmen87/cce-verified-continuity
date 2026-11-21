@@ -7,6 +7,10 @@ export function observeExecution(exitCode:number|null,isError:boolean,diagnostic
   if(/^\s*Traceback \(most recent call last\):/m.test(diagnostic))signals.push('PYTHON_TRACEBACK');
   if(/^FAILED \([^\n]*(?:failures|errors)=\d+/m.test(diagnostic))signals.push('UNITTEST_FAILURE');
   if(/^=+[^\n]*\b[1-9]\d* (?:failed|errors?)\b[^\n]*=+$/m.test(diagnostic))signals.push('PYTEST_FAILURE');
-  const observedOutcome=processOutcome==='UNKNOWN'?'UNKNOWN':processOutcome==='FAILED'||isError?'FAIL':signals.length?'CONTRADICTORY':'UNKNOWN';
-  return {exitCode,processOutcome,observedOutcome,signals,authority:'OUTPUT_OBSERVATION_ONLY' as const};
+  const testOutcome=signals.some(s=>s==='UNITTEST_FAILURE'||s==='PYTEST_FAILURE')?'FAIL' as const:'UNKNOWN' as const;
+  const observedOutcome=processOutcome==='FAILED'||isError?'FAIL':signals.length?
+    processOutcome==='SUCCEEDED'?'CONTRADICTORY':testOutcome==='FAIL'?'FAIL':'DIAGNOSTIC':'UNKNOWN';
+  return {exitCode,processOutcome,testOutcome,observedOutcome,signals,
+    processStatus:processOutcome==='UNKNOWN'?'PROCESS_STATUS_UNKNOWN' as const:'EXIT_CODE_OBSERVED' as const,
+    requiresReview:isError||signals.length>0,authority:'OUTPUT_OBSERVATION_ONLY' as const};
 }

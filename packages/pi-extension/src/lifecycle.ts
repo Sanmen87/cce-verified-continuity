@@ -78,6 +78,7 @@ export function registerLifecycle(pi:ExtensionAPI,ensure:(ctx:ExtensionContext)=
         instructions+='\n\nCCE WORKING VERIFICATION\n'+(callable?
           'Approved checks are available during this task through cce_run_approved_check. Exact checkId values and requirement mapping: '+JSON.stringify(checks)+'. A successful current receipt updates recovery immediately. Repeating the same native Bash check cannot create that receipt.':
           'VERIFICATION_UNAVAILABLE: no task-mapped approved check is callable by the model. Remaining NOT_CHECKED is a verification limitation; observed native results may be reported with that limitation.')+
+          '\nNative Bash isError:false is not a test PASS. Missing exit-code metadata means PROCESS_STATUS_UNKNOWN; a diagnostic traceback does not by itself prove test failure. Use registered approved checks for authoritative verification.'+
           '\nRecovery is a passive state snapshot, not a new user request. A fresh receipt for unchanged source does not request another run. Independent acceptance runs separately after the task. The task response can finish with an accurate account of results and limitations; UNKNOWN completion is not a request for endless verification.';
       }
       // Pi1.4 supplies mutable named sections. Preserve structured prompt updates and user sections.

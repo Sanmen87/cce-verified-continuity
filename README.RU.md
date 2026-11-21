@@ -1,4 +1,4 @@
-# Code Context Engine — 0.1.0-alpha.1
+# Code Context Engine — 0.1.0-alpha.2
 
 **Русский** · [English](README.md)
 
@@ -48,6 +48,8 @@ pi -e ./packages/pi-extension
 | CWS / Action Continuity | Детерминированная рекомендация следующего действия; не даёт разрешения на исполнение и не гарантирует отсутствие цикла |
 | Vector retrieval | Experimental, выключен по умолчанию; нужен явно настроенный локальный endpoint/model, улучшение русского поиска не заявлено |
 
+В alpha.2 разделены [наблюдения процесса/вывода и trusted verification](docs/shell-evidence-validation.md), добавлен аудит каждого наблюдаемого recovery packet и сохранены UNKNOWN/STALE. [Диагностика A→B на Pi 1.5](docs/pi15-candidate-smoke-results.md) дала независимо принятый код, но завершилась по watchdog. Compaction и завершение работы агентом проверяются отдельно; этот результат не означает полного workflow PASS или доказанной экономии токенов.
+
 ## Эксперименты и результаты
 
 [Публичный набор исследований](evaluation/README.md) включает методологию, успешные и неудачные результаты, машинные сводки, 64 извлечённых usage receipts и evidence 12 MCP trials на авторской синтетической fixture. Исходные оценки не пересмотрены; post-hoc повторы отделены от primary schedule.
@@ -58,6 +60,6 @@ npm run test:evaluation
 
 Эта команда **не обращается к модели**: перепроверяет опубликованные hashes, арифметику, исходный MCP scoring и доставленные source ranges. Она не воспроизводит независимое CRM grading: hidden acceptance tests, сырые prompts/reasoning/SSE и приватные архивы не публикуются. Unit/integration tests CCE доступны через `npm run test:public`. Границы воспроизводимости указаны в каждом отчёте.
 
-Рабочие workspace-пакеты private. `npm run release:pack` создаёт три npm-архива с compiled ESM, типами, exports и лицензиями; `npm run release:clean-install` проверяет их вне checkout. Владелец подтвердил npm scope `@sanmen87`: пакеты называются `@sanmen87/core`, `@sanmen87/pi-extension`, `@sanmen87/mcp`. Версия alpha — `0.1.0-alpha.1`, тег распространения — `alpha`. [Установка из npm](QUICKSTART.md#install-the-alpha-from-npm); также доступен публичный [GitHub repository](https://github.com/Sanmen87/cce-verified-continuity), исходники и собранные архивы.
+Рабочие workspace-пакеты private. `npm run release:pack` создаёт три npm-архива с compiled ESM, типами, exports и лицензиями; `npm run release:clean-install` проверяет их вне checkout. Владелец подтвердил npm scope `@sanmen87`: пакеты называются `@sanmen87/core`, `@sanmen87/pi-extension`, `@sanmen87/mcp`. Версия alpha — `0.1.0-alpha.2`, тег распространения — `alpha`. [Установка из npm](QUICKSTART.md#install-the-alpha-from-npm); также доступен публичный [GitHub repository](https://github.com/Sanmen87/cce-verified-continuity), исходники и собранные архивы.
 
 [Архитектура](release/docs/architecture.md) · [Ограничения](release/docs/limitations.md) · [Публикация](release/docs/publishing.md) · [Changelog](CHANGELOG.md) · [Apache-2.0](LICENSE) · [Сторонние лицензии](THIRD_PARTY_NOTICES.md)

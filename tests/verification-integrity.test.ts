@@ -42,3 +42,18 @@ test('process completion and observed native output never constitute test succes
  assert.equal(observeExecution(null,false,'').processOutcome,'UNKNOWN');
  assert.equal(observeExecution(0,false,'','watchdog').processOutcome,'UNKNOWN');
 });
+
+test('native missing exit metadata preserves process UNKNOWN while exposing test failure and non-verdict diagnostics',async t=>{
+ const h=await engineFor(t,{id:'check',source:'unit-host',type:'unit-test',execute:async()=>({exitCode:0,diagnostic:'Host check passed',executionId:'host-check'})});
+ await h.life.userRequirement('goal',contract.text);
+ await h.life.recordTool('pipeline','bash',{content:[{type:'text',text:'Ran 30 tests\nFAILED (errors=16)\n'}],details:{}},{command:'never executed'},false);
+ await h.life.recordTool('trace','bash',{content:[{type:'text',text:traceback}],details:{}},{command:'never executed'},false);
+ const state=await h.life.taskState();const native=state.currentWork!.observedNativeExecutions as any[];
+ const failed=native.find(r=>r.toolCallId==='pipeline').execution;
+ assert.equal(failed.processOutcome,'UNKNOWN');assert.equal(failed.processStatus,'PROCESS_STATUS_UNKNOWN');assert.equal(failed.testOutcome,'FAIL');assert.equal(failed.observedOutcome,'FAIL');
+ const trace=native.find(r=>r.toolCallId==='trace').execution;
+ assert.equal(trace.processOutcome,'UNKNOWN');assert.equal(trace.testOutcome,'UNKNOWN');assert.equal(trace.observedOutcome,'DIAGNOSTIC');
+ assert.ok(state.openIssues.some(r=>r.text.includes('TOOL_DIAGNOSTIC_OBSERVED')));
+ assert.equal(state.checks.length,0);assert.equal(state.requirements[0]!.status,'NOT_CHECKED');
+ const packet=await h.life.recover(12000);assert.ok(packet.text.includes('PROCESS_STATUS_UNKNOWN'));assert.ok(!packet.text.includes('Recover full original before treating this error as resolved'));
+});

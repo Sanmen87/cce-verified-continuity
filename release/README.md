@@ -1,4 +1,4 @@
-# Code Context Engine — 0.1.0-alpha.1
+# Code Context Engine — 0.1.0-alpha.2
 
 **English** · [Русский](README.RU.md)
 
@@ -32,7 +32,7 @@ node dist/packages/core/src/cli.js status .
 
 The development workspaces are private and expose source TypeScript. `npm run release:pack` creates the actual distributable packages: compiled ESM, declarations, explicit exports, bundled grammar assets and license notices. `npm run release:clean-install` installs those archives in independent temporary projects and checks their runtime, types and Pi loader.
 
-Package identifiers use the owner-confirmed `@sanmen87` npm scope. The [GitHub repository](https://github.com/Sanmen87/cce-verified-continuity) is public. The alpha version is `0.1.0-alpha.1`, distributed with the `alpha` tag. See [npm installation](QUICKSTART.md#install-the-alpha-from-npm) or use source/built archives; release preparation is described in [publishing](release/docs/publishing.md).
+Package identifiers use the owner-confirmed `@sanmen87` npm scope. The [GitHub repository](https://github.com/Sanmen87/cce-verified-continuity) is public. The alpha version is `0.1.0-alpha.2`, distributed with the `alpha` tag. See [npm installation](QUICKSTART.md#install-the-alpha-from-npm) or use source/built archives; release preparation is described in [publishing](release/docs/publishing.md).
 
 ## Behavior and opt-in
 
@@ -54,6 +54,8 @@ For explicit assist and verified recovery, select a trusted configuration with `
 | Vector retrieval | Experimental, disabled by default; explicit local model required; no claimed Russian-query improvement |
 
 Core packages: `@sanmen87/core`, `@sanmen87/pi-extension`, `@sanmen87/mcp`. The MCP adapter provides read-only retrieval and logs; it does not implement Pi lifecycle.
+
+Alpha.2 reliability work separates [process/output evidence and trusted verification](docs/shell-evidence-validation.md), audits each observed recovery packet, and preserves unknown/stale states. The [Pi 1.5 candidate A-to-B diagnostic](docs/pi15-candidate-smoke-results.md) produced independently accepted code but ended at its watchdog; compaction and agent completion are separate checks. See the recorded limits before treating the result as a completed workflow or a token-savings claim.
 
 ## Evaluation results
 
