@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Per-request verified recovery inspection with explicit DEGRADED reasons, requirement hashes and a documented Pi hook/transport boundary; observe-only defaults stay unchanged.
+- Separate process/output observations; exit-zero tracebacks cannot produce PASS under the legacy approved-check policy. Registered check adapters can opt into explicit structured outcomes.
+- Regression coverage for final SDK request bodies, downstream recovery removal, budget boundaries and fresh A-to-B continuation. See [validation](docs/recovery-verification-integrity.md).
+- A published Pi 1.5.0 live continuity smoke is planned separately; these fixes are not included in npm `0.1.0-alpha.1`.
+
 ## 0.1.0-alpha.1 — 2026-11-19
 
 - First packaged alpha of the existing local CCE core, Pi adapter and read-only MCP adapter.

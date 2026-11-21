@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { boundedString } from '../config.ts';
 import { sha256 } from '../workspace.ts';
 import { containsSecret } from '../native/secrets.ts';
+import { observeExecution } from './execution.ts';
 import type { SourceEvidence } from '../native/contracts.ts';
 import type { ApprovedCheck, ContextQualityReport, ExplicitTaskContract, ProjectBinding, RequirementStatus, VerificationReceipt } from './contracts.ts';
 const EXECUTED_CHECK = Symbol('executed-check-receipt');
@@ -61,6 +62,7 @@ export class TaskCoverageTracker {
       status:bindingDigest(receipt.binding)===bindingDigest(binding)?receipt.status:'UNKNOWN',
       historicalStatus:receipt.status,freshness:bindingDigest(receipt.binding)===bindingDigest(binding)?'CURRENT':'STALE',
       requirementIds:[...receipt.requirementIds],finishedAt:receipt.finishedAt,
+      ...(receipt.execution?{execution:receipt.execution}:{}),...(receipt.resultPolicy?{resultPolicy:receipt.resultPolicy}:{}),
     }));
   }
   snapshot() {return{schemaVersion:1,contract:this.contract,contractSha256:this.contractSha256,implementation:[...this.implemented],verificationRequiresRevalidation:true};}
@@ -90,13 +92,20 @@ export class VerificationFeedback {
     const requirements=this.tracker.contract.requirements.filter(r=>r.checks.includes(checkId));if(!requirements.length)throw new Error('Check has no explicit requirement mapping');
     const before=await this.binding(),startedAt=new Date().toISOString();
     let exitCode:number|null=null,diagnostic='Verification execution unavailable',executionId:string=randomUUID();
-    let termination:VerificationReceipt['termination']='launch-error';
-    try{const result=await check.execute();exitCode=result.exitCode;diagnostic=result.diagnostic;executionId=boundedString(result.executionId,256);termination=result.termination??'completed';}catch{diagnostic='Approved check execution failed before a trustworthy result';}
+    let termination:VerificationReceipt['termination']='launch-error',outcome:unknown;
+    try{const result=await check.execute();exitCode=result.exitCode;diagnostic=result.diagnostic;executionId=boundedString(result.executionId,256);termination=result.termination??'completed';outcome=result.outcome;}catch{diagnostic='Approved check execution failed before a trustworthy result';}
     const after=await this.binding(),stable=bindingDigest(before)===bindingDigest(after);
-    const status=stable&&termination==='completed'&&Number.isSafeInteger(exitCode)&&exitCode!>=0?exitCode===0?'PASS':'FAIL':'UNKNOWN';
+    const execution=observeExecution(exitCode,false,diagnostic,termination),resultPolicy=check.resultPolicy??'exit-code';
+    let status:VerificationReceipt['status']='UNKNOWN';
+    if(stable&&termination==='completed'&&execution.processOutcome!=='UNKNOWN'){
+      if(resultPolicy==='explicit-result'){
+        if(outcome==='FAIL')status='FAIL';
+        else if(outcome==='PASS'&&exitCode===0)status='PASS';
+      }else if(resultPolicy==='exit-code'&&execution.observedOutcome!=='CONTRADICTORY')status=exitCode===0?'PASS':'FAIL';
+    }
     if(!stable)diagnostic='Source/Git changed during verification; rerun required';
     if(containsSecret(diagnostic))diagnostic='Diagnostic omitted: potential secret';
-    const receipt:VerificationReceipt={id:randomUUID(),checkId,type:check.type,status,diagnostic:diagnostic.slice(0,4096),source:check.source,executionId,termination,startedAt,finishedAt:new Date().toISOString(),binding:before,requirementIds:requirements.map(r=>r.id),
+    const receipt:VerificationReceipt={id:randomUUID(),checkId,type:check.type,status,diagnostic:diagnostic.slice(0,4096),source:check.source,executionId,termination,execution,resultPolicy,startedAt,finishedAt:new Date().toISOString(),binding:before,requirementIds:requirements.map(r=>r.id),
       retryRetrieval:status==='FAIL'?requirements.map(r=>({requirementId:r.id,symbols:r.needs.flatMap(n=>n.symbol?[n.symbol]:[]),paths:r.needs.flatMap(n=>n.path?[n.path]:[]),includeTests:true})):[]};
     this.tracker.acceptVerification(receipt,EXECUTED_CHECK);return receipt;
   }

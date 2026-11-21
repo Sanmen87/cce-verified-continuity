@@ -11,6 +11,7 @@ import { prepareTaskRecovery } from './recovery.ts';
 import { confirmTaskContract, contractRevisions } from './task-contract.ts';
 import { projectTaskState } from './task-state.ts';
 import type { ExplicitTaskContract } from '../quality/contracts.ts';
+import { observeExecution } from '../quality/execution.ts';
 import pathModule from 'node:path';
 import {realpath} from 'node:fs/promises';
 import {checkpointPath} from '../checkpoint-path.ts';
@@ -43,6 +44,17 @@ export class ContextLifecycle {
     return revision;
   }
   async taskState(){await this.taskContract();return projectTaskState(this);}
+  async recoveryRequirements(){
+    await this.taskContract();
+    const events=this.ledger.list(this.engine.sessionId,this.branchId,{mandatory:true,limit:1024});
+    const superseded=new Set(events.filter(e=>e.origin==='user'||e.origin==='host').flatMap(e=>e.supersedes?[e.supersedes]:[]));
+    const required=await Promise.all(events.filter(e=>!superseded.has(e.id)).map(async e=>{
+      try{const original=(await this.ledger.original(this.engine.sessionId,this.branchId,e.id)).text;
+        return {eventId:e.id,sha256:e.blobSha256,...(!containsSecret(original)?{text:original}:{})};
+      }catch{return {eventId:e.id,sha256:e.blobSha256};}
+    }));
+    return {required,scopeComplete:events.length<1024};
+  }
   async runApprovedCheck(checkId:string){
     await this.taskContract();
     const quality=this.engine.quality;
@@ -82,11 +94,13 @@ export class ContextLifecycle {
     }
     const code=asRecord(asRecord(payload).details).exitCode;
     const event=await this.ledger.append(this.engine.sessionId,this.branchId,{externalId:'tool:'+callId,kind:'TOOL_RESULT',origin:'tool',text:JSON.stringify({toolName:name,result:JSON.parse(text)}),toolCallId:callId,sources,isError,exitCode:typeof code==='number'&&Number.isSafeInteger(code)&&code>=-255&&code<=255?code:null});
-    if(isError||typeof code==='number'&&code!==0){
+    const output=Array.isArray(asRecord(payload).content)?(asRecord(payload).content as unknown[]).flatMap(c=>typeof asRecord(c).text==='string'?[String(asRecord(c).text)]:[]).join('\n'):'';
+    const execution=observeExecution(typeof code==='number'?code:null,isError,output);
+    if(isError||typeof code==='number'&&code!==0||name==='bash'&&execution.observedOutcome==='CONTRADICTORY'){
       const content=asRecord(payload).content,lines=Array.isArray(content)?content.flatMap(c=>typeof asRecord(c).text==='string'?String(asRecord(c).text).split(/\r?\n/):[]):[];
       const important=lines.filter(line=>/error|fail|exception|traceback|assert/i.test(line)),selected=important.length?important:[...lines.slice(0,2),...lines.slice(-2)];
       const diagnostic=selected.slice(0,8).map(line=>containsSecret(line)?'[Potential secret diagnostic omitted]':line.slice(0,256));
-      await this.ledger.append(this.engine.sessionId,this.branchId,{externalId:'tool-issue:'+callId,kind:'OPEN_ISSUE',origin:'tool',toolCallId:callId,exitCode:typeof code==='number'&&Number.isSafeInteger(code)&&code>=-255&&code<=255?code:null,isError:true,text:JSON.stringify({status:'TOOL_ERROR_OBSERVED',historical:true,resolution:'UNVERIFIED',toolName:name,originalEventId:event.id,diagnostic,diagnosticPartial:selected.length>8||selected.some(line=>line.length>256),nextAction:'Recover full original before treating this error as resolved'})});
+      await this.ledger.append(this.engine.sessionId,this.branchId,{externalId:'tool-issue:'+callId,kind:'OPEN_ISSUE',origin:'tool',toolCallId:callId,exitCode:typeof code==='number'&&Number.isSafeInteger(code)&&code>=-255&&code<=255?code:null,isError:true,text:JSON.stringify({status:execution.observedOutcome==='CONTRADICTORY'?'TOOL_OUTPUT_CONTRADICTION':'TOOL_ERROR_OBSERVED',execution,historical:true,resolution:'UNVERIFIED',toolName:name,originalEventId:event.id,diagnostic,diagnosticPartial:selected.length>8||selected.some(line=>line.length>256),nextAction:'Recover full original before treating this error as resolved'})});
     }
     for(const source of sources){const body=(await this.engine.workspace.read(source.path,this.engine.config.retrieval.maxFileBytes)).text;this.remember({evidenceId:event.id,presence:'FULL_BODY',source,text:body,bodySha256:sha256(body)});}
     return event;

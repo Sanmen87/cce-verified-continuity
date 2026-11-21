@@ -6,6 +6,7 @@ import { scanTree } from './audit.mjs';
 const directory = 'release-artifacts/source-' + new Date().toISOString().replaceAll(/[:.]/g, '-'); await fs.mkdir(directory, { recursive: true });
 const exact = ['package.json', 'package-lock.json', 'tsconfig.json', 'tsconfig.build.json', 'LICENSE', 'NOTICE', '.gitignore', '.gitattributes', 'README.RU.md', 'QUICKSTART.md', 'CHANGELOG.md', 'scripts/copy-assets.mjs', 'scripts/pi-smoke.ts'];
 exact.push('docs/lifecycle-setup.ru.md');
+exact.push('docs/recovery-verification-integrity.md', 'docs/pi15-continuity-smoke-protocol.md');
 const trees = ['packages', 'release', 'scripts/release', '.github/workflows', 'evaluation', 'examples/continuity', 'examples/lifecycle'];
 const files = [...exact];
 for (const tree of trees) for (const file of await walk(tree)) files.push(tree + '/' + file);

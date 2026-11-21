@@ -2,6 +2,7 @@ import { containsSecret } from '../native/secrets.ts';
 import type { ContextLifecycle } from './service.ts';
 import { contractRevisions } from './task-contract.ts';
 import { currentWork } from './current-work.ts';
+import { observeExecution } from '../quality/execution.ts';
 
 /** A projection of scoped observations, not a generated summary or a completion verdict. */
 export async function projectTaskState(life: ContextLifecycle, verificationAccess?:'IN_LOOP'|'HOST_ONLY') {
@@ -42,7 +43,7 @@ export async function projectTaskState(life: ContextLifecycle, verificationAcces
     if(receipt?.status==='FAIL'&&receipt.id===detail.receiptId)classification='CURRENT_CHECK_FAILURE';
     if(receipt?.status==='PASS'&&executions.some(event=>event.sequence>e.sequence&&event.detail.type==='CCE_APPROVED_CHECK'&&event.detail.receiptId===receipt.id&&event.detail.contractSha256===tracker?.contractSha256))classification='HISTORICAL_CHECK_PASSED';
     // The full record remains in the ledger; old imperative nextAction text is not repeated as current work.
-    if(detail.status==='TOOL_ERROR_OBSERVED'){
+    if(detail.status==='TOOL_ERROR_OBSERVED'||detail.status==='TOOL_OUTPUT_CONTRADICTION'){
       const {nextAction:_,...passive}=detail;display.text=JSON.stringify(passive).slice(0,1024);
     }
     return{eventId:e.id,origin:e.origin,...display,authority:e.origin==='agent'?'MODEL_CLAIM':'OBSERVED_EVENT',historical:true,
@@ -64,6 +65,7 @@ export async function projectTaskState(life: ContextLifecycle, verificationAcces
     const output=Array.isArray(result.content)?result.content.flatMap(part=>part&&typeof part==='object'&&typeof (part as Record<string,unknown>).text==='string'?[(part as {text:string}).text]:[]).join('\n'):'';
     const preview=output.length>256?output.slice(0,128)+'\n[output preview shortened]\n'+output.slice(-128):output;
     nativeObservations.push({eventId:e.id,originalSha256:e.blobSha256,tool:'bash',toolCallId:e.toolCallId??null,exitCode:e.exitCode??null,isError:e.isError??null,
+      execution:observeExecution(e.exitCode??null,e.isError??false,output),
       outputPreview:preview,partial:output.length>256,authority:'NATIVE_OUTPUT_OBSERVATION_ONLY',correctness:'UNVERIFIED',freshness:'NOT_A_VERIFICATION_RECEIPT'});
   }
   const state={

@@ -1,5 +1,8 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs/promises';import path from 'node:path';import {pathToFileURL} from 'node:url';import {execFile} from 'node:child_process';import {promisify} from 'node:util';
 import {fixture} from './helpers.ts';import {ContextEngine} from '../packages/core/src/index.ts';import type {ExplicitTaskContract} from '../packages/core/src/quality/contracts.ts';
+import {inspectRecoveryPacket} from '../packages/core/src/lifecycle/recovery-integrity.ts';
+import {providerPacket} from '../packages/pi-extension/src/provider-packet.ts';
+import type {ExtensionAPI,ExtensionToolContext} from '@earendil-works/pi-coding-agent';
 const contract:ExplicitTaskContract={id:'crm-task',source:'user',text:'Preserve tenant isolation.',requirements:[{id:'tenant',clause:'Preserve tenant isolation.',needs:[{id:'models',kind:'source',path:'crm/models.py',representation:'full'}],checks:['check']}]};
 const config={mode:'assist',quality:{coverageEnabled:true},lifecycle:{enabled:true,ledgerEnabled:true,projectionEnabled:true,historyRecallEnabled:true,recoveryPolicy:'verified-state',handoffBudgetTokens:12000}};
 const check={id:'check',type:'custom-approved' as const,source:'trusted-unit-adapter',execute:async()=>({exitCode:0,diagnostic:'Actual fixed host adapter',executionId:'fixed-check'})};
@@ -12,7 +15,12 @@ test('durable A→clean B reuses original contract version, reads back checkpoin
  const b=await session(root,'B');t.after(()=>b.close());assert.equal((await b.lifecycle!.taskState()).requirements.length,0);
  const startup=await b.lifecycle!.restoreContinuation(handle);assert.ok(startup);assert.equal(startup.contractRevisionId,revision);assert.equal(startup.receiptAuthority,'HISTORICAL_ONLY_RECHECK_REQUIRED');
  let state=await b.lifecycle!.taskState();assert.equal(state.contract!.revisionId,revision);assert.equal(state.requirements[0]!.status,'NOT_CHECKED');assert.equal(state.checks.length,0);assert.equal(state.completion,'UNKNOWN');
- assert.ok((await b.lifecycle!.recover(12000)).text.includes(contract.text));await b.lifecycle!.runApprovedCheck('check');assert.equal((await b.lifecycle!.taskState()).requirements[0]!.status,'VERIFIED_PASS');
+ const recovery=await b.lifecycle!.recover(12000);assert.ok(recovery.text.includes(contract.text));
+ const model={api:'openai-completions',provider:'fixture',baseUrl:'http://127.0.0.1:1/v1',id:'fixture',name:'No inference',reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0},contextWindow:65536,maxTokens:16384};
+ const packet=await providerPacket({getAllTools:()=>[],getActiveTools:()=>[]} as unknown as ExtensionAPI,{model,getSystemPrompt:()=>''} as unknown as ExtensionToolContext,[{role:'user',content:recovery.text,timestamp:0}]);
+ const expected=await b.lifecycle!.recoveryRequirements();const audit=inspectRecoveryPacket(packet.body,expected.required,{status:recovery.status,text:recovery.text,coverage:recovery.handoff?.coverage??'UNKNOWN'},expected.scopeComplete);
+ assert.equal(audit.status,'PRESENT_AT_INSPECTION');assert.equal(audit.providerDelivery,'UNKNOWN');assert.equal(packet.networkCalls,0);
+ await b.lifecycle!.runApprovedCheck('check');assert.equal((await b.lifecycle!.taskState()).requirements[0]!.status,'VERIFIED_PASS');
  await b.lifecycle!.restoreContinuation(handle);state=await b.lifecycle!.taskState();assert.equal(state.requirements[0]!.status,'VERIFIED_PASS');
 });
 test('outside edits between sessions stale source evidence and skip stale indexed symbols; project memory is reused',async t=>{

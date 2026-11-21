@@ -29,14 +29,18 @@ export interface ContextQualityReport {
   recommendedAction: 'use-context' | 'expand-context' | 'retrieve-more' | 'read-source'; reasons: string[];
 }
 export interface ProjectBinding { projectId: string; files: Record<string,string | null>; git: GitState }
-export interface ExecutedCheckResult { exitCode: number | null; diagnostic: string; executionId: string; termination?: 'completed' | 'watchdog' | 'aborted' | 'launch-error' }
+export interface ExecutedCheckResult { exitCode: number | null; diagnostic: string; executionId: string; termination?: 'completed' | 'watchdog' | 'aborted' | 'launch-error'; outcome?:'PASS'|'FAIL'|'UNKNOWN' }
 export interface ApprovedCheck {
   id: string; type: 'unit-test' | 'integration-test' | 'typecheck' | 'build' | 'lint' | 'custom-approved';
   source: string; execute: () => Promise<ExecutedCheckResult>;
+  /** Explicit outcomes are accepted only from this registered host adapter. */
+  resultPolicy?: 'exit-code' | 'explicit-result';
 }
 export interface VerificationReceipt {
   id: string; checkId: string; type: ApprovedCheck['type']; status: 'PASS' | 'FAIL' | 'UNKNOWN'; diagnostic: string;
   source: string; executionId: string; startedAt: string; finishedAt: string; binding: ProjectBinding;
   termination: 'completed' | 'watchdog' | 'aborted' | 'launch-error';
+  execution?:ReturnType<typeof import('./execution.ts').observeExecution>;
+  resultPolicy?:'exit-code'|'explicit-result';
   requirementIds: string[]; retryRetrieval: Array<{ requirementId: string; symbols: string[]; paths: string[]; includeTests: boolean }>;
 }
