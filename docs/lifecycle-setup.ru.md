@@ -1,6 +1,6 @@
 # Как включить lifecycle CCE в Pi
 
-Руководство для **CCE 0.1.0-alpha.2 и Pi 1.5.0**. Lifecycle сохраняет требования пользователя и историю действий, готовит ограниченный handoff при compaction и восстанавливает обязательное состояние перед продолжением работы. Подробную историю модель запрашивает отдельно. Установка расширения сама по себе этого не включает: по умолчанию CCE работает в `observe-only`, lifecycle выключен.
+Руководство для **CCE 0.1.0-alpha.3 и Pi 1.5.0**. Lifecycle сохраняет требования пользователя и историю действий, готовит ограниченный handoff при compaction и восстанавливает обязательное состояние перед продолжением работы. Подробную историю модель запрашивает отдельно. Установка расширения сама по себе этого не включает: по умолчанию CCE работает в `observe-only`, lifecycle выключен.
 
 ## 1. Подготовить Pi
 
@@ -43,7 +43,8 @@ pi --version
     "compactionMode": "deterministic",
     "handoffBudgetTokens": 12000,
     "recoveryReserveTokens": 2048,
-    "currentWorkEnabled": true
+    "currentWorkEnabled": true,
+    "currentWorkPolicy": { "stateProjection": true, "actionRecommendation": "assist" }
   }
 }
 ```
@@ -65,6 +66,8 @@ pi --version
 | `recoveryReserveTokens: 2048` | Резерв для последующей доставки recovery; не размер всего окна |
 | `currentWorkEnabled: true` | CWS: представление текущей работы и рекомендации следующего действия |
 
+В alpha.3 рекомендации настраиваются отдельно: `lifecycle.currentWorkPolicy.actionRecommendation` принимает `off`, `observe`, `assist`. **Off убирает только текущий next_action, сам CWS остаётся.** Observe передаёт вычисленное предложение только доверенному host callback, без model-visible вывода; обычный конфиг Pi сам по себе не создаёт shadow-log. Assist — совместимый default рекомендаций. [Полная настройка и границы диагностики](cws-policy.md).
+
 Остальные параметры сохраняют значения по умолчанию. Mini-LLM и внешнее хранение больших tool outputs этим примером не включаются. Числа `12000` и `2048` — ограничения, а не обещание такого объёма при каждом запросе. CCE учитывает сведения адаптера об окне, сохраняемый хвост истории и накладные расходы. При отсутствии точного счётчика расчёт остаётся оценочным.
 
 ## 3. Запустить Pi из этого же терминала
@@ -73,14 +76,14 @@ pi --version
 
 ```powershell
 $env:CCE_CONFIG = (Resolve-Path ./cce.lifecycle.json).Path
-pi.cmd -e npm:@sanmen87/pi-extension@0.1.0-alpha.2
+pi.cmd -e npm:@sanmen87/pi-extension@0.1.0-alpha.3
 ```
 
 В Bash на Linux/macOS:
 
 ```sh
 export CCE_CONFIG="$PWD/cce.lifecycle.json"
-pi -e npm:@sanmen87/pi-extension@0.1.0-alpha.2
+pi -e npm:@sanmen87/pi-extension@0.1.0-alpha.3
 ```
 
 Путь может содержать пробелы. `CCE_CONFIG` — переменная окружения процесса, а не поле в `settings.json` Pi. Уже запущенный Pi не получит переменную из другого терминала. Для первого включения и после смены выбранного файла закройте Pi и запустите заново этими командами. Если тот же файл уже выбран, после его редактирования можно выполнить `/reload`; перезапуск также подходит.
@@ -155,14 +158,14 @@ PowerShell:
 
 ```powershell
 Remove-Item Env:CCE_CONFIG -ErrorAction SilentlyContinue
-pi.cmd -e npm:@sanmen87/pi-extension@0.1.0-alpha.2
+pi.cmd -e npm:@sanmen87/pi-extension@0.1.0-alpha.3
 ```
 
 Bash:
 
 ```sh
 unset CCE_CONFIG
-pi -e npm:@sanmen87/pi-extension@0.1.0-alpha.2
+pi -e npm:@sanmen87/pi-extension@0.1.0-alpha.3
 ```
 
 Это не удаляет `.context-engine/` и сохранённые сессии. Если сторонний host передаёт CCE конфиг программно, менять нужно его настройки: такой конфиг имеет приоритет над `CCE_CONFIG`.

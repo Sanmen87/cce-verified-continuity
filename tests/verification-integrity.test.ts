@@ -43,6 +43,28 @@ test('process completion and observed native output never constitute test succes
  assert.equal(observeExecution(0,false,'','watchdog').processOutcome,'UNKNOWN');
 });
 
+test('automatic mandatory layout keeps trusted authority, stale binding and access limits after a source edit',async t=>{
+ const h=await engineFor(t,{id:'check',source:'host-verifier',type:'unit-test',
+   execute:async()=>({exitCode:0,diagnostic:'OK',executionId:'run-1'})});
+ await h.life.userRequirement('goal',contract.text);
+ const receipt=await h.life.runApprovedCheck('check');
+ assert.equal(receipt.status,'PASS');
+ for(const changed of [false,true]){
+   if(changed)await writeFile(path.join(h.root,'access.py'),'allowed=False\n');
+   const compile=await h.life.recoveryCompiler(undefined,changed?'HOST_ONLY':'IN_LOOP');
+   const recovery=await compile(12000,true);
+   assert.equal(recovery.status,'COMPLETE');
+   assert.equal(recovery.handoff?.taskStatePacking,'MANDATORY');
+   const state=JSON.parse(recovery.text.split('TASK STATE PROJECTION\n')[1]!.split('\n')[0]!);
+   assert.equal(state.checks[0].id,receipt.id);assert.equal(state.checks[0].source,'host-verifier');
+   assert.equal(state.checks[0].freshness,changed?'STALE':'CURRENT');
+   assert.equal(state.checks[0].status,changed?'UNKNOWN':'PASS');assert.equal(state.checks[0].historicalStatus,'PASS');
+   assert.equal(state.requirements[0].status==='VERIFIED_PASS',!changed);
+   assert.equal(state.approvedVerification.executionAccess,changed?'HOST_ONLY':'IN_LOOP');
+   assert.equal(state.completion,'UNKNOWN');assert.equal(state.independentAcceptance,'NOT_RUN');
+ }
+});
+
 test('native missing exit metadata preserves process UNKNOWN while exposing test failure and non-verdict diagnostics',async t=>{
  const h=await engineFor(t,{id:'check',source:'unit-host',type:'unit-test',execute:async()=>({exitCode:0,diagnostic:'Host check passed',executionId:'host-check'})});
  await h.life.userRequirement('goal',contract.text);

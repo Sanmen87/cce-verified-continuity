@@ -42,7 +42,12 @@ jobs:
         run: node scripts/release/publish.mjs
         env:
           CCE_CONFIRM_PUBLICATION: alpha-reviewed
-      - name: GitHub prerelease
+      - name: GitHub experimental release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$CCE_RELEASE_TAG" release-artifacts/run-*/*.tgz --verify-tag --prerelease --title "CCE $CCE_RELEASE_TAG" --notes-file CHANGELOG.md
+        run: |
+          if node -e 'process.exit(JSON.parse(require("fs").readFileSync("release/config.json")).githubLatest ? 0 : 1)'; then
+            gh release create "$CCE_RELEASE_TAG" release-artifacts/run-*/*.tgz --verify-tag --latest --title "CCE $CCE_RELEASE_TAG — experimental alpha" --notes-file docs/alpha3-release.md
+          else
+            gh release create "$CCE_RELEASE_TAG" release-artifacts/run-*/*.tgz --verify-tag --prerelease --title "CCE $CCE_RELEASE_TAG" --notes-file CHANGELOG.md
+          fi

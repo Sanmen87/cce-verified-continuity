@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-alpha.3 — 2026-11-22
+
+- Independent CWS recommendation modes: `off` omits only current `next_action`, `observe` computes it for a trusted host callback without model delivery, and `assist` preserves existing recommendation behavior. Objective state projection, Task Contract, Ledger and verified memory remain available. Recommendation default stays `assist`; CCE still defaults to observe-only with lifecycle disabled. [Configuration](docs/cws-policy.md).
+- Scoped current-work diagnostics include projection SHA, mode and source scope without writing shadow recommendations to Ledger/model-visible tools. Telemetry does not claim final provider delivery or gain execution authority.
+- Adaptive verified recovery uses current provider/history capacity, prioritizes original requirements and mandatory Task State, and reports FULL/MANDATORY/DEGRADED explicitly. Native output limits, requirement provenance, stale receipts and tool-call/result pairs retain their trust boundaries.
+- Added configuration/state regressions, final SDK transport coverage for all three modes and clean-consumer declaration checks for the callback. No new memory store, LLM compressor or Agent Policy Engine.
+- Published [two real AB/BA execution pairs](evaluation/reports/cws-recommendation-execution.md) with 32 provider-usage receipts and offline arithmetic/inventory verification: both arms fully accepted 1/2 tasks. In this small diagnostic, off used 4.68% less input, 28.97% less output and 16.52% less time. All arms stopped at eight cycles before autonomous verification; A2 omitted optional CWS in three MANDATORY packets. No general savings, coding-superiority or loop-prevention claim.
+- At the owner's request, this experimental alpha uses the npm **latest** channel. Pin the exact version for reproducibility; latest does not mean stable. Earlier alpha versions and historical benchmark scores remain immutable. [Release notes](docs/alpha3-release.md).
+
 ## 0.1.0-alpha.2 — 2026-11-21
 
 - Per-request verified recovery inspection with explicit DEGRADED reasons, requirement hashes and a documented Pi hook/transport boundary; observe-only defaults stay unchanged.

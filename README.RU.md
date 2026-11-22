@@ -1,4 +1,4 @@
-# Code Context Engine — 0.1.0-alpha.2
+# Code Context Engine — 0.1.0-alpha.3
 
 **Русский** · [English](README.md)
 
@@ -21,6 +21,10 @@ npm run demo:continuity
 
 **Экспериментальная alpha.** Общее преимущество в разработке, экономия токенов и автоматическое предотвращение циклов модели не доказаны. SHA подтверждает тождество содержимого, но не правильность кода. Слова модели не заменяют независимые тесты.
 
+## Что нового в alpha.3
+
+Независимые режимы рекомендаций CWS `off / observe / assist`; состояние задачи сохраняется при `off`. Адаптивный recovery сначала размещает обязательные требования и Task State. [Настройка](docs/cws-policy.md), [изменения](CHANGELOG.md), [две реальные пары AB/BA](evaluation/reports/cws-recommendation-execution.md): по 1/2 полного acceptance в обеих группах, меньшие наблюдаемые расходы без текущей рекомендации. Это диагностика на одной модели, не доказательство общей экономии или предотвращения циклов.
+
 ## Установка и запуск
 
 Нужны Node.js **>=22.19.0**, npm, Git и ripgrep. Pi adapter проверен с **Pi 1.5.0**. Python 3 нужен для некоторых development tests и опциональной проверки схем. Для установки, индексации и smoke не нужны LM Studio или загруженная модель.
@@ -37,7 +41,7 @@ pi -e ./packages/pi-extension
 
 В PowerShell используйте `npm.cmd` и `pi.cmd`, если execution policy блокирует `.ps1` shims. Инструкция установки архивов и настройки: [QUICKSTART](QUICKSTART.md).
 
-По умолчанию включён **observe-only**, lifecycle выключен. Для assist/recovery нужно явно выбрать доверенный `CCE_CONFIG`. [Пошаговый гайд по включению lifecycle](docs/lifecycle-setup.ru.md): готовый конфиг, запуск на Windows/Linux, проверка подключения, compaction и отключение. История и пары tool-call/tool-result сохраняются. CWS включён внутри включённого lifecycle; `lifecycle.currentWorkEnabled: false` отключает его рекомендации, сохраняя контракт и обязательный recovery.
+По умолчанию включён **observe-only**, lifecycle выключен. Для assist/recovery нужно явно выбрать доверенный `CCE_CONFIG`. [Пошаговый гайд по включению lifecycle](docs/lifecycle-setup.ru.md): готовый конфиг, запуск на Windows/Linux, проверка подключения, compaction и отключение. История и пары tool-call/tool-result сохраняются. CWS включён внутри включённого lifecycle; `lifecycle.currentWorkPolicy.actionRecommendation: "off"` убирает только текущий `next_action`, сохраняя CWS. `observe` вычисляет предложение только для диагностического callback; `assist` остаётся default рекомендаций. `currentWorkEnabled: false` отключает весь CWS. Подробнее: [режимы CWS](docs/cws-policy.md).
 
 | Модуль | Назначение и границы |
 |---|---|
@@ -60,6 +64,6 @@ npm run test:evaluation
 
 Эта команда **не обращается к модели**: перепроверяет опубликованные hashes, арифметику, исходный MCP scoring и доставленные source ranges. Она не воспроизводит независимое CRM grading: hidden acceptance tests, сырые prompts/reasoning/SSE и приватные архивы не публикуются. Unit/integration tests CCE доступны через `npm run test:public`. Границы воспроизводимости указаны в каждом отчёте.
 
-Рабочие workspace-пакеты private. `npm run release:pack` создаёт три npm-архива с compiled ESM, типами, exports и лицензиями; `npm run release:clean-install` проверяет их вне checkout. Владелец подтвердил npm scope `@sanmen87`: пакеты называются `@sanmen87/core`, `@sanmen87/pi-extension`, `@sanmen87/mcp`. Версия alpha — `0.1.0-alpha.2`, тег распространения — `alpha`. [Установка из npm](QUICKSTART.md#install-the-alpha-from-npm); также доступен публичный [GitHub repository](https://github.com/Sanmen87/cce-verified-continuity), исходники и собранные архивы.
+Рабочие workspace-пакеты private. `npm run release:pack` создаёт три npm-архива с compiled ESM, типами, exports и лицензиями; `npm run release:clean-install` проверяет их вне checkout. Владелец подтвердил npm scope `@sanmen87`: пакеты называются `@sanmen87/core`, `@sanmen87/pi-extension`, `@sanmen87/mcp`. Версия alpha — `0.1.0-alpha.3`, npm-тег распространения — `latest` (это по-прежнему экспериментальная alpha). [Установка из npm](QUICKSTART.md#install-the-alpha-from-npm); также доступен публичный [GitHub repository](https://github.com/Sanmen87/cce-verified-continuity), исходники и собранные архивы.
 
 [Архитектура](release/docs/architecture.md) · [Ограничения](release/docs/limitations.md) · [Публикация](release/docs/publishing.md) · [Changelog](CHANGELOG.md) · [Apache-2.0](LICENSE) · [Сторонние лицензии](THIRD_PARTY_NOTICES.md)

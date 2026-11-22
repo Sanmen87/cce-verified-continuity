@@ -1,9 +1,18 @@
 {
   "mode": "assist",
-  "assist": { "strategy": "combined" },
-  "retrieval": { "backend": "hybrid-native" },
-  "hybrid": { "enableVector": false },
-  "quality": { "coverageEnabled": true, "guardEnabled": true },
+  "assist": {
+    "strategy": "combined"
+  },
+  "retrieval": {
+    "backend": "hybrid-native"
+  },
+  "hybrid": {
+    "enableVector": false
+  },
+  "quality": {
+    "coverageEnabled": true,
+    "guardEnabled": true
+  },
   "lifecycle": {
     "enabled": true,
     "ledgerEnabled": true,
@@ -14,6 +23,10 @@
     "compactionMode": "deterministic",
     "handoffBudgetTokens": 12000,
     "recoveryReserveTokens": 2048,
-    "currentWorkEnabled": true
+    "currentWorkEnabled": true,
+    "currentWorkPolicy": {
+      "stateProjection": true,
+      "actionRecommendation": "assist"
+    }
   }
 }

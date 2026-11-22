@@ -9,13 +9,14 @@ import { contextBudget, type ContextBudget } from './budget.ts';
 import { registerLifecycle,type RecoveryDiagnostic } from './lifecycle.ts';
 import type { MiniCompressor,TokenCounter } from '../../core/src/lifecycle/contracts.ts';
 import type {LifecycleDiagnostic} from './lifecycle-diagnostics.ts';
+import type {CurrentWorkDiagnostic} from '../../core/src/lifecycle/current-work.ts';
 import type {ContinuationHandle} from '../../core/src/lifecycle/continuation.ts';
 export interface ContextTrace {
   mechanism: 'tool' | 'auto'; toolCallId?: string; estimatedTokens: number; budget: ContextBudget;
   sources: Array<{ path: string; startLine: number; endLine: number; sha256: string }>;
   payloadSha256?:string;
 }
-export interface ExtensionOptions { config?: unknown; onContext?: (trace: ContextTrace) => void; taskContract?:ExplicitTaskContract; verificationChecks?:ApprovedCheck[];lifecycleTokenCounter?:TokenCounter;miniCompressor?:MiniCompressor;onLifecycleDiagnostic?:(diagnostic:LifecycleDiagnostic)=>void;onRecoveryDiagnostic?:(diagnostic:RecoveryDiagnostic)=>void;continuation?:(ContinuationHandle&{targetSessionId:string}) }
+export interface ExtensionOptions { config?: unknown; onContext?: (trace: ContextTrace) => void; taskContract?:ExplicitTaskContract; verificationChecks?:ApprovedCheck[];lifecycleTokenCounter?:TokenCounter;miniCompressor?:MiniCompressor;onLifecycleDiagnostic?:(diagnostic:LifecycleDiagnostic)=>void;onRecoveryDiagnostic?:(diagnostic:RecoveryDiagnostic)=>void;onCurrentWorkDiagnostic?:(diagnostic:CurrentWorkDiagnostic)=>void;continuation?:(ContinuationHandle&{targetSessionId:string}) }
 const short = Type.String({ minLength: 1, maxLength: 256,
   description: 'One literal symbol or filename, e.g. DealAdmin, can_edit_deal or deal.py. A multi-word phrase is matched verbatim, not as semantic keywords.' });
 const taskId = Type.String({ minLength: 1, maxLength: 128 });
@@ -262,6 +263,6 @@ export function registerCce(pi: ExtensionAPI, options: ExtensionOptions = {}): v
     try { const cce = await ensure(ctx); if (cce.config.enabled) cce.recordMetric('session.compactions', 1, 'measured'); } catch { diagnostic(ctx); }
   });
   pi.on('session_shutdown', async () => { engine?.close(); engine = undefined; key = ''; lastTask = ''; });
-  if(lifecycleEnabled)registerLifecycle(pi,ensure,{exposure,...(options.lifecycleTokenCounter?{counter:options.lifecycleTokenCounter}:{}),...(options.miniCompressor?{mini:options.miniCompressor}:{}),...(options.onLifecycleDiagnostic?{onDiagnostic:options.onLifecycleDiagnostic}:{}),...(options.onRecoveryDiagnostic?{onRecoveryDiagnostic:options.onRecoveryDiagnostic}:{})});
+  if(lifecycleEnabled)registerLifecycle(pi,ensure,{exposure,...(options.lifecycleTokenCounter?{counter:options.lifecycleTokenCounter}:{}),...(options.miniCompressor?{mini:options.miniCompressor}:{}),...(options.onLifecycleDiagnostic?{onDiagnostic:options.onLifecycleDiagnostic}:{}),...(options.onRecoveryDiagnostic?{onRecoveryDiagnostic:options.onRecoveryDiagnostic}:{}),...(options.onCurrentWorkDiagnostic?{onCurrentWorkDiagnostic:options.onCurrentWorkDiagnostic}:{})});
 }
 export default function extension(pi: ExtensionAPI): void { registerCce(pi); }

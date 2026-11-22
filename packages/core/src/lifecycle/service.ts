@@ -10,6 +10,7 @@ import { schemaEvidence } from './schema-evidence.ts';
 import { prepareTaskRecovery } from './recovery.ts';
 import { confirmTaskContract, contractRevisions } from './task-contract.ts';
 import { projectTaskState } from './task-state.ts';
+import type {CurrentWorkDiagnostic} from './current-work.ts';
 import type { ExplicitTaskContract } from '../quality/contracts.ts';
 import { observeExecution } from '../quality/execution.ts';
 import pathModule from 'node:path';
@@ -79,9 +80,31 @@ export class ContextLifecycle {
     }
     for(const r of task.requirements)await this.ledger.append(this.engine.sessionId,this.branchId,{externalId:'contract:'+sha256(task.id+':'+r.id+':'+r.clause),kind:'USER_REQUIREMENT',origin:'user',text:r.clause,mandatory:true});
   }
-  async compile(budget=this.engine.config.lifecycle.handoffBudgetTokens,counter?:TokenCounter,throughSequence?:number,verificationAccess?:'IN_LOOP'|'HOST_ONLY'){await this.taskContract();const binding=this.engine.quality?.tracker?await this.engine.quality.binding():undefined,states=binding?this.engine.quality!.tracker!.inspect(binding):[];const current=states.filter(r=>r.status==='VERIFIED_PASS'||r.status==='VERIFIED_FAIL');return compileHandoff(this.ledger,this.engine.sessionId,this.branchId,{budget,configurationGeneration:sha256(JSON.stringify(this.engine.config.lifecycle)),...(counter?{counter}:{}),...(throughSequence!==undefined?{throughSequence}:{}),...(this.engine.config.lifecycle.recoveryPolicy==='verified-state'?{taskState:await projectTaskState(this,verificationAccess)}:{}),...(current.length?{currentVerification:{requirements:current.map(r=>({id:r.id,status:r.status,checks:r.checks})),...(this.engine.config.lifecycle.recoveryPolicy==='verified-state'?{}:{binding})}}:{})});}
+  private async handoffInputs(verificationAccess?:'IN_LOOP'|'HOST_ONLY',onCurrentWorkDiagnostic?:(view:CurrentWorkDiagnostic)=>void){
+    await this.taskContract();
+    const binding=this.engine.quality?.tracker?await this.engine.quality.binding():undefined;
+    const states=binding?this.engine.quality!.tracker!.inspect(binding):[];
+    const current=states.filter(r=>r.status==='VERIFIED_PASS'||r.status==='VERIFIED_FAIL');
+    const verified=this.engine.config.lifecycle.recoveryPolicy==='verified-state';
+    return {configurationGeneration:sha256(JSON.stringify(this.engine.config.lifecycle)),
+      ...(verified?{taskState:await projectTaskState(this,verificationAccess,onCurrentWorkDiagnostic)}:{}),
+      ...(current.length?{currentVerification:{requirements:current.map(r=>({id:r.id,status:r.status,checks:r.checks})),...(verified?{}:{binding})}}:{})};
+  }
+  async compile(budget=this.engine.config.lifecycle.handoffBudgetTokens,counter?:TokenCounter,throughSequence?:number,verificationAccess?:'IN_LOOP'|'HOST_ONLY'){
+    const inputs=await this.handoffInputs(verificationAccess);
+    return compileHandoff(this.ledger,this.engine.sessionId,this.branchId,{...inputs,budget,...(counter?{counter}:{}),...(throughSequence!==undefined?{throughSequence}:{})});
+  }
+  /** Both layouts for a single request use the same scoped facts and Ledger boundary. */
+  async recoveryCompiler(counter:TokenCounter=conservativeCounter,verificationAccess?:'IN_LOOP'|'HOST_ONLY',onCurrentWorkDiagnostic?:(view:CurrentWorkDiagnostic)=>void){
+    const inputs=await this.handoffInputs(verificationAccess,onCurrentWorkDiagnostic);
+    const session=this.engine.sessionId,branch=this.branchId;
+    const throughSequence=inputs.taskState?.throughSequence??this.ledger.latestSequence(session,branch);
+    return (budget:number,mandatoryOnly=false)=>prepareTaskRecovery(limit=>
+      compileHandoff(this.ledger,session,branch,{...inputs,budget:limit,throughSequence,counter,
+        ...(inputs.taskState?{recoveryPacking:{state:inputs.taskState,mandatoryOnly}}:{})}),budget,counter);
+  }
   async recover(budget:number,counter:TokenCounter=conservativeCounter,verificationAccess?:'IN_LOOP'|'HOST_ONLY'){
-    return prepareTaskRecovery(limit=>this.compile(limit,counter,undefined,verificationAccess),budget,counter);
+    return (await this.recoveryCompiler(counter,verificationAccess))(budget);
   }
   async canonicalSourcePath(input:string){return checkpointPath(this.engine.workspace,input,new Set(await this.engine.sourceFiles(true)));}
   async recordTool(callId:string,name:string,payload:unknown,input:Record<string,unknown>,isError:boolean){

@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { scenarios, gradeAnswer, inspectEvidence } from './mcp-scoring.mjs';
+import {verifyCwsExecution} from './verify-cws-execution.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const read = async name => JSON.parse(await fs.readFile(path.join(root,name),'utf8'));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -55,4 +56,5 @@ assert.equal(long.compactions.cycles.filter(c=>c.fromExtension && c.reason==='th
 const cross=await read('results/cross-session-v2.json'); assert.equal(cross.acceptance,'NOT_EVALUATED'); assert.equal(cross.posthocPartial.grade.passed,17); assert.equal(cross.usage.unknownCalls,1);
 const decision=await read('results/decision-replay.json'); assert.ok(decision.trials.every(t=>t.toolsExecuted===0 && t.independentCodingAcceptance==='NOT_EXERCISED'));
 const pilot=await read('results/first-pilot.json'); assert.equal(pilot.runs.length,9); assert.equal(pilot.runs.filter(r=>r.acceptance.status==='PASS').length,3);
-console.log(JSON.stringify({status:'PASS',scope:'OFFLINE_PUBLIC_ARTIFACT_AUDIT_NOT_LIVE_CODING',inventoryFiles:inventory.files.length,mcpTrials:12,mcpStrictPass:strictPass,mcpEvidencePass:evidencePass,executionUsageReceipts:64,executionFullyAcceptedTasks:0,modelRequests:0}));
+const cwsExecution=await verifyCwsExecution();
+console.log(JSON.stringify({status:'PASS',scope:'OFFLINE_PUBLIC_ARTIFACT_AUDIT_NOT_LIVE_CODING',inventoryFiles:inventory.files.length,mcpTrials:12,mcpStrictPass:strictPass,mcpEvidencePass:evidencePass,executionUsageReceipts:64,executionFullyAcceptedTasks:0,cwsExecution,modelRequests:0}));

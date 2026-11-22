@@ -27,10 +27,10 @@ Use `npm.cmd` and `pi.cmd` in PowerShell if execution policy blocks `.ps1` shims
 For a new or existing Node.js project, install only the packages you need. To install all three at the reviewed alpha version:
 
 ```sh
-npm install --ignore-scripts @sanmen87/core@0.1.0-alpha.2 @sanmen87/pi-extension@0.1.0-alpha.2 @sanmen87/mcp@0.1.0-alpha.2
+npm install --ignore-scripts @sanmen87/core@0.1.0-alpha.3 @sanmen87/pi-extension@0.1.0-alpha.3 @sanmen87/mcp@0.1.0-alpha.3
 ```
 
-Core alone needs only `@sanmen87/core@0.1.0-alpha.2`. The `alpha` distribution tag selects the current experimental alpha; pin an exact version for reproducible use. The `latest` tag may still point to an earlier prerelease; distribution tags do not make an alpha stable. Use `@alpha` or the exact version explicitly. The Pi adapter still requires an installed Pi host:
+Core alone needs only `@sanmen87/core@0.1.0-alpha.3`. The owner selected `latest` for this experimental alpha; npm installs without a version select alpha.3. A distribution tag does not make an alpha stable. Pin the exact version above for reproducible use. The Pi adapter still requires an installed Pi host:
 
 ```sh
 pi -e ./node_modules/@sanmen87/pi-extension
@@ -44,7 +44,7 @@ Build with `npm run release:pack`. Copy the three archives listed in `release-ar
 
 ```sh
 npm init -y
-npm install --ignore-scripts ./sanmen87-core-0.1.0-alpha.2.tgz ./sanmen87-pi-extension-0.1.0-alpha.2.tgz ./sanmen87-mcp-0.1.0-alpha.2.tgz
+npm install --ignore-scripts ./sanmen87-core-0.1.0-alpha.3.tgz ./sanmen87-pi-extension-0.1.0-alpha.3.tgz ./sanmen87-mcp-0.1.0-alpha.3.tgz
 pi -e ./node_modules/@sanmen87/pi-extension
 ```
 
@@ -85,7 +85,8 @@ Create a trusted `cce.json` in your project:
     "compactionMode": "deterministic",
     "handoffBudgetTokens": 12000,
     "recoveryReserveTokens": 2048,
-    "currentWorkEnabled": true
+    "currentWorkEnabled": true,
+    "currentWorkPolicy": { "stateProjection": true, "actionRecommendation": "assist" }
   }
 }
 ```
@@ -105,7 +106,8 @@ CCE_CONFIG="$PWD/cce.json" pi -e ./node_modules/@sanmen87/pi-extension
 
 Restart Pi from the terminal where `CCE_CONFIG` is set; an already running Pi does not inherit environment changes from another terminal. For edits to the already selected file, `/reload` also reloads the extension. `CCE_CONFIG` is read only when explicitly selected by the host; untrusted project configuration is not automatically executed.
 
-- Disable CWS only: set `lifecycle.currentWorkEnabled` to `false`. Requirements, provenance and Ledger stay available.
+- Omit only the current action recommendation: set `lifecycle.currentWorkPolicy.actionRecommendation` to `"off"`. CWS state, requirements, receipts and Ledger remain available. `"observe"` sends recommendations only to a host diagnostic callback, not the model; the compatible recommendation default is `"assist"`.
+- Disable the whole CWS projection: set `lifecycle.currentWorkEnabled` to `false`. Requirements, provenance and Ledger stay available.
 - Return to the default: exit Pi, unset `CCE_CONFIG` in the launching terminal, then start Pi again. Lifecycle is off and mode is observe-only.
 - Vector retrieval stays off unless explicitly configured with a local embedding endpoint and model. It is not needed for AST/FTS/graph.
 - Verification becomes authoritative only through registered host-approved checks bound to current sources. Plain shell output and model claims remain observations.

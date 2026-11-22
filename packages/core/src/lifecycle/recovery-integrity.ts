@@ -2,7 +2,7 @@ import {sha256} from '../workspace.ts';
 
 export interface RecoveryRequirement {eventId:string;sha256:string;text?:string}
 export interface RecoveryAttempt {
-  status:string; text?:string; coverage?:string; taskStatePacking?:string;
+  status:string; text?:string; coverage?:string; taskStatePacking?:string; budgetReason?:string;
 }
 /** Only message text sent in user/system channels counts. Tool output, tool
  * schemas, assistant claims and arbitrary JSON metadata cannot prove recovery. */
@@ -33,6 +33,7 @@ export function inspectRecoveryPacket(payload:unknown,required:readonly Recovery
   if(requirements.some(r=>r.presence==='MISSING'))reasons.push('MANDATORY_REQUIREMENTS_MISSING');
   if(!attempt)reasons.push('NO_RECOVERY_ATTEMPT');
   else if(attempt.status!=='COMPLETE')reasons.push(attempt.status);
+  if(attempt?.budgetReason)reasons.push(attempt.budgetReason);
   if(attempt?.text&&recoveryPresence==='MISSING')reasons.push('PREPARED_RECOVERY_MISSING');
   if(!attempt?.text)reasons.push('NO_RECOVERY_TEXT');
   if(attempt?.coverage&&attempt.coverage!=='FULL')reasons.push('RECOVERY_COVERAGE_INCOMPLETE');

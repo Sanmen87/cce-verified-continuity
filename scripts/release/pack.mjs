@@ -3,6 +3,7 @@ import path from 'node:path';
 import { npm, read, write, walk, hash } from './common.mjs';
 import { scanTree, forbiddenPath } from './audit.mjs';
 const config = await read('release/config.json'), root = await read('package.json');
+const distTag=config.distTag??'alpha';if(!['alpha','latest'].includes(distTag))throw Error('Unsupported reviewed distribution tag');
 const scope = process.env.CCE_RELEASE_SCOPE ?? config.scope;
 if (!/^@[a-z0-9][a-z0-9-]*$/.test(scope)) throw Error('Invalid npm scope');
 const repository = process.env.CCE_RELEASE_REPOSITORY ?? config.repository;
@@ -46,7 +47,7 @@ for (const name of ['core', 'pi-extension', 'mcp']) {
  const manifest = { name: scope + '/' + name, version: config.version, type: 'module', license: 'Apache-2.0', description: 'Code Context Engine ' + name + ' — local verified context, experimental alpha',
   engines: { node: config.node }, main: './dist/src/index.js', types: './dist/src/index.d.ts', exports,
   files: ['dist/', 'README.md', 'README.RU.md', 'QUICKSTART.md', 'LICENSE', 'NOTICE', 'THIRD_PARTY_NOTICES.md'],
-  publishConfig: { access: 'public', tag: 'alpha' }, ...(repository ? { repository: { type: 'git', url: repository + '.git', directory: 'packages/' + name } } : {}),
+  publishConfig: { access: 'public', tag: distTag }, ...(repository ? { repository: { type: 'git', url: repository + '.git', directory: 'packages/' + name } } : {}),
   ...(original.dependencies ? { dependencies: original.dependencies } : {}),
   ...(name !== 'core' ? { dependencies: { ...original.dependencies, [scope + '/core']: config.version } } : {}),
   ...(name === 'pi-extension' ? { keywords: ['pi-package', 'context', 'local-llm'], pi: { extensions: ['./dist/src/index.js'] }, peerDependencies: original.peerDependencies, peerDependenciesMeta: original.peerDependenciesMeta } : {}),
@@ -60,7 +61,7 @@ for (const name of ['core', 'pi-extension', 'mcp']) {
  const tarball = output + '/' + packed.filename;
  packages.push({ name: manifest.name, version: manifest.version, tarball, sha256: hash(await fs.readFile(tarball)), manifest, dryRun: dry, packed });
 }
-const result = { at: new Date().toISOString(), version: config.version, scope, repository, status: 'PACKED_NOT_PUBLISHED', packages,
+const result = { at: new Date().toISOString(), version: config.version, scope, repository, distTag, status: 'PACKED_NOT_PUBLISHED', packages,
  publicPublishingBlockers: [...(config.registryIdentityStatus !== 'CONFIRMED' || scope !== config.scope ? ['Npm scope must match the owner-confirmed release configuration'] : []), ...(!repository ? ['Set CCE_RELEASE_REPOSITORY before provenance/publishing'] : [])],
  api: { public: 'Package root exports and documented ContextEngine API', adapterSupport: [...internal].sort().map(module => './internal/' + module), stability: 'Internal subpaths support bundled adapters; unstable throughout alpha' } };
 await write(output + '/manifest.json', result); await write('release-artifacts/latest.json', result);

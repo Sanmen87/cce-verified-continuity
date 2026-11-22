@@ -14,6 +14,7 @@ English summary: public reports include negative results. This bundle supports o
 | [Cross-Session B v2](reports/cross-session-v2.md) | STOPPED/NOT_EVALUATED; post-hoc partial FAIL 17/21 | Доставка recovery не равна успешному продолжению; полная стоимость UNKNOWN |
 | [Decision replay](reports/decision-replay.md) | Полезная проверка выбрана 2/2 каждым arm | Команды не исполнялись; нельзя заключать об исправлении кода или устранении циклов |
 | [Execution continuation](reports/execution-continuation.md) | Ни одной полной принятой задачи; CWS 20/21 только в двух AB, 17/21 в BA; известные tokens +3,59% | Один snapshot, post-hoc retry, backend reload и неконтролируемые cache/RNG; причинное преимущество не доказано |
+| [CWS recommendation AB/BA, 22 ноября](reports/cws-recommendation-execution.md) | С next_action и без него по 1/2 полного PASS; 32/32 mandatory recovery, 32 provider receipts; без рекомендации меньшие расходы | Локальный кандидат до упаковки alpha.3, два повтора; все остановлены на 8 циклах до автономных тестов, 3 пакета A2 без CWS; общего преимущества и причинного предотвращения циклов не доказано |
 
 ## Структура и воспроизводимость
 
@@ -22,6 +23,7 @@ English summary: public reports include negative results. This bundle supports o
 - `results/`: производные машинные сводки без prompts, reasoning и приватных путей; UNKNOWN не заменяется нулём.
 - `fixtures/mcp.json`, `scripts/mcp-scoring.mjs`: авторская синтетическая fixture и неизменённый исходный scorer для read-only MCP series. В публичных results включены только клиентские source bodies, проверенные против этой fixture.
 - `results/execution-usage-receipts.json`: 64 набора provider counters. При экспорте сверены с последними usage frames сохранённых SSE и request SHA. Reasoning является частью output, повторно не прибавляется.
+- `results/cws-execution-usage-receipts.json`: ещё 32 набора counters новой серии; старые 64 записи и результаты не заменяются. Отдельный verifier пересчитывает суммы, долю полностью принятых задач и 29 FULL/3 MANDATORY.
 - `provenance.json`: hashes и размеры исходных отчётов/артефактов, из которых получены публичные поля; оригиналы не выдаются за публично доступные файлы.
 - `inventory.json`: SHA-256 публичных файлов; обнаруживает изменение после подготовки, но не является подписью или внешней аттестацией.
 

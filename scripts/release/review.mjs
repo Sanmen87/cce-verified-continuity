@@ -9,6 +9,7 @@ export function validateReviewedArchives(config, packed, clean, environment) {
  assert.equal(environment.CCE_RELEASE_SCOPE, config.scope);
  assert.ok(config.repository, 'Owner must confirm the public repository');
  assert.equal(packed.repository, config.repository);
+ const distTag=config.distTag??'alpha';assert.ok(['alpha','latest'].includes(distTag),'Unsupported reviewed distribution tag');assert.equal(packed.distTag??'alpha',distTag,'Archive channel must match reviewed configuration');
  assert.equal(environment.CCE_RELEASE_REPOSITORY, config.repository);
  assert.equal(clean.status, 'PASS');
  assert.deepEqual(clean.packages, packed.packages.map(({ name, sha256 }) => ({ name, sha256 })), 'Clean installation must cover these exact archives');

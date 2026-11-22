@@ -9,6 +9,7 @@ exact.push('docs/lifecycle-setup.ru.md');
 exact.push('docs/recovery-verification-integrity.md', 'docs/pi15-continuity-smoke-protocol.md');
 exact.push('docs/pi15-candidate-smoke-run.md', 'docs/pi15-candidate-smoke-results.md', 'docs/pi15-resume-smokes-protocol.md', 'docs/shell-evidence-validation.md');
 exact.push('docs/pi15-resume-smokes-results.md');
+exact.push('docs/cws-policy.md','docs/alpha3-release.md');
 const trees = ['packages', 'release', 'scripts/release', '.github/workflows', 'evaluation', 'examples/continuity', 'examples/lifecycle'];
 const files = [...exact];
 for (const tree of trees) for (const file of await walk(tree)) files.push(tree + '/' + file);

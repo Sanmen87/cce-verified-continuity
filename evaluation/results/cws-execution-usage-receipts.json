@@ -1,0 +1,487 @@
+{
+  "schemaVersion": 1,
+  "receipts": [
+    {
+      "pair": 1,
+      "arm": "A",
+      "ordinal": 1,
+      "payloadSha256": "3b6a8fddff2ddf88f64a44af872d80ab831ba4f859a084a9468d4d1a397f8ee7",
+      "usage": {
+        "prompt_tokens": 37439,
+        "completion_tokens": 353,
+        "total_tokens": 37792,
+        "completion_tokens_details": {
+          "reasoning_tokens": 286
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 1,
+      "arm": "A",
+      "ordinal": 2,
+      "payloadSha256": "9a7eeefa991c78fdfd7954a9b42ba2ad87402211f3e284fd45e0e18f4e2154a0",
+      "usage": {
+        "prompt_tokens": 38543,
+        "completion_tokens": 3563,
+        "total_tokens": 42106,
+        "completion_tokens_details": {
+          "reasoning_tokens": 3404
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 1,
+      "arm": "A",
+      "ordinal": 3,
+      "payloadSha256": "cf0f1896471c685ff7d62d3103dbc4399bb00c1c0279e0d5233e660a52bbf34c",
+      "usage": {
+        "prompt_tokens": 42810,
+        "completion_tokens": 8106,
+        "total_tokens": 50916,
+        "completion_tokens_details": {
+          "reasoning_tokens": 6743
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 1,
+      "arm": "A",
+      "ordinal": 4,
+      "payloadSha256": "c256b53775d5a412f4b53e95f283f3a9c20d7a59f2d31776f84108c6438eebf1",
+      "usage": {
+        "prompt_tokens": 50950,
+        "completion_tokens": 431,
+        "total_tokens": 51381,
+        "completion_tokens_details": {
+          "reasoning_tokens": 319
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 1,
+      "arm": "A",
+      "ordinal": 5,
+      "payloadSha256": "81719a11b857a6ce15fc5469ffdeaae378ca27fc0db1d1aa6812f8d5886c0227",
+      "usage": {
+        "prompt_tokens": 51967,
+        "completion_tokens": 762,
+        "total_tokens": 52729,
+        "completion_tokens_details": {
+          "reasoning_tokens": 612
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 1,
+      "arm": "A",
+      "ordinal": 6,
+      "payloadSha256": "1a78fe1ca7aa759b48216d42da4e6baaae3e1c0d251f37c29f819cfa235bada5",
+      "usage": {
+        "prompt_tokens": 53904,
+        "completion_tokens": 685,
+        "total_tokens": 54589,
+        "completion_tokens_details": {
+          "reasoning_tokens": 324
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 1,
+      "arm": "A",
+      "ordinal": 7,
+      "payloadSha256": "dd3b556e7a06b374fc844a7cfb1cb73b5553e2e7ca9d319c546abb6a7bc5f87d",
+      "usage": {
+        "prompt_tokens": 54618,
+        "completion_tokens": 393,
+        "total_tokens": 55011,
+        "completion_tokens_details": {
+          "reasoning_tokens": 277
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 1,
+      "arm": "A",
+      "ordinal": 8,
+      "payloadSha256": "733f6f4e7ab755288e84213e30dbd8c1c153a872f1421b7c4d11648e79d00224",
+      "usage": {
+        "prompt_tokens": 57588,
+        "completion_tokens": 3477,
+        "total_tokens": 61065,
+        "completion_tokens_details": {
+          "reasoning_tokens": 963
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 1,
+      "arm": "B",
+      "ordinal": 1,
+      "payloadSha256": "a7fdd848662f3b556ecc8568bd6173a9522c34bfa88cd49c70f9ebb96c042558",
+      "usage": {
+        "prompt_tokens": 37400,
+        "completion_tokens": 128,
+        "total_tokens": 37528,
+        "completion_tokens_details": {
+          "reasoning_tokens": 55
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 1,
+      "arm": "B",
+      "ordinal": 2,
+      "payloadSha256": "e4ef2f97df8e801de46143c2b70866ba20ba57170a1e78b0124a9e4eaa175d36",
+      "usage": {
+        "prompt_tokens": 38279,
+        "completion_tokens": 2636,
+        "total_tokens": 40915,
+        "completion_tokens_details": {
+          "reasoning_tokens": 2478
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 1,
+      "arm": "B",
+      "ordinal": 3,
+      "payloadSha256": "1f9b898f8bfee947d2742c318bfe29d731ea2fef0481ebc11700e68241ee7bdc",
+      "usage": {
+        "prompt_tokens": 41619,
+        "completion_tokens": 4666,
+        "total_tokens": 46285,
+        "completion_tokens_details": {
+          "reasoning_tokens": 4433
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 1,
+      "arm": "B",
+      "ordinal": 4,
+      "payloadSha256": "e715d730a11b052a6127f4dfd38d0fbf553ae69851f126e8ba5d5e7edcf8ea3a",
+      "usage": {
+        "prompt_tokens": 46871,
+        "completion_tokens": 120,
+        "total_tokens": 46991,
+        "completion_tokens_details": {
+          "reasoning_tokens": 55
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 1,
+      "arm": "B",
+      "ordinal": 5,
+      "payloadSha256": "07623bc4204ae8af9a5d3e6eadd611ebeb42aeea3e1b15b9356ab2a54b8702e3",
+      "usage": {
+        "prompt_tokens": 47247,
+        "completion_tokens": 123,
+        "total_tokens": 47370,
+        "completion_tokens_details": {
+          "reasoning_tokens": 48
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 1,
+      "arm": "B",
+      "ordinal": 6,
+      "payloadSha256": "46ffbdbdd6103856e2dcb5db50f60a7625c3ab3be958ef35220e0c88ed97de16",
+      "usage": {
+        "prompt_tokens": 49624,
+        "completion_tokens": 6684,
+        "total_tokens": 56308,
+        "completion_tokens_details": {
+          "reasoning_tokens": 5391
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 1,
+      "arm": "B",
+      "ordinal": 7,
+      "payloadSha256": "d9abf18a8a0eb86795a7ae353347593ed4c87b0fa148de8c529f7243518be3a0",
+      "usage": {
+        "prompt_tokens": 56334,
+        "completion_tokens": 452,
+        "total_tokens": 56786,
+        "completion_tokens_details": {
+          "reasoning_tokens": 127
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 1,
+      "arm": "B",
+      "ordinal": 8,
+      "payloadSha256": "39231f14c69e21d4111dc38b1cfe4a9e93cc80f90448e6bd089a292a7b30809e",
+      "usage": {
+        "prompt_tokens": 56815,
+        "completion_tokens": 263,
+        "total_tokens": 57078,
+        "completion_tokens_details": {
+          "reasoning_tokens": 164
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 2,
+      "arm": "B",
+      "ordinal": 1,
+      "payloadSha256": "efd6ca5aecfcf2307ee23e89ed1f32811252c787867e56c27cef530207c570bf",
+      "usage": {
+        "prompt_tokens": 37386,
+        "completion_tokens": 129,
+        "total_tokens": 37515,
+        "completion_tokens_details": {
+          "reasoning_tokens": 55
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 2,
+      "arm": "B",
+      "ordinal": 2,
+      "payloadSha256": "68bb2afe9c64c5af74ebe6fe480af3dc935614cfb61af091a972b630cd232aa0",
+      "usage": {
+        "prompt_tokens": 38266,
+        "completion_tokens": 1311,
+        "total_tokens": 39577,
+        "completion_tokens_details": {
+          "reasoning_tokens": 1222
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 2,
+      "arm": "B",
+      "ordinal": 3,
+      "payloadSha256": "acaf55c0276a6332215272559a385eee79410c1eced5c8defec4be53f4f59ef3",
+      "usage": {
+        "prompt_tokens": 40281,
+        "completion_tokens": 5263,
+        "total_tokens": 45544,
+        "completion_tokens_details": {
+          "reasoning_tokens": 5010
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 2,
+      "arm": "B",
+      "ordinal": 4,
+      "payloadSha256": "4e8e609b44086abebec1bfee6706ca77e6ce25202582fdac3db5da095ac823a1",
+      "usage": {
+        "prompt_tokens": 46130,
+        "completion_tokens": 3739,
+        "total_tokens": 49869,
+        "completion_tokens_details": {
+          "reasoning_tokens": 2674
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 2,
+      "arm": "B",
+      "ordinal": 5,
+      "payloadSha256": "0e5ed19ceac8a978f279c752c64dff33bfa2dad8e1a9c17a55b37ca88e31c48f",
+      "usage": {
+        "prompt_tokens": 49904,
+        "completion_tokens": 499,
+        "total_tokens": 50403,
+        "completion_tokens_details": {
+          "reasoning_tokens": 181
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 2,
+      "arm": "B",
+      "ordinal": 6,
+      "payloadSha256": "7a756413989c90eeb15f64c240c176a628bf2c36ab17c6f12a31432acbfe9368",
+      "usage": {
+        "prompt_tokens": 50112,
+        "completion_tokens": 375,
+        "total_tokens": 50487,
+        "completion_tokens_details": {
+          "reasoning_tokens": 221
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 2,
+      "arm": "B",
+      "ordinal": 7,
+      "payloadSha256": "9d86d4c5b15bee88bfad5c9eaddb129ad7cb41947b45c999cd94e9b7cc7f74e5",
+      "usage": {
+        "prompt_tokens": 51306,
+        "completion_tokens": 458,
+        "total_tokens": 51764,
+        "completion_tokens_details": {
+          "reasoning_tokens": 284
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 2,
+      "arm": "B",
+      "ordinal": 8,
+      "payloadSha256": "52ad2678facaff31e9b99a1dddc8dade0829aad152d31a3f7d3b0e2ede75d300",
+      "usage": {
+        "prompt_tokens": 52689,
+        "completion_tokens": 480,
+        "total_tokens": 53169,
+        "completion_tokens_details": {
+          "reasoning_tokens": 352
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 2,
+      "arm": "A",
+      "ordinal": 1,
+      "payloadSha256": "2c322c65df0582555880739158d7a6e61e557a279150a0a2ddd6e88b11dcbf84",
+      "usage": {
+        "prompt_tokens": 37433,
+        "completion_tokens": 517,
+        "total_tokens": 37950,
+        "completion_tokens_details": {
+          "reasoning_tokens": 414
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 2,
+      "arm": "A",
+      "ordinal": 2,
+      "payloadSha256": "4728c791c96da9dab98f614e774610d4ed65bfc1a96de576499cf423ade51465",
+      "usage": {
+        "prompt_tokens": 38701,
+        "completion_tokens": 800,
+        "total_tokens": 39501,
+        "completion_tokens_details": {
+          "reasoning_tokens": 688
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 2,
+      "arm": "A",
+      "ordinal": 3,
+      "payloadSha256": "aadbb705c521ba3c54073288deeeae649603cff45e185c0badd0e4dbe3067354",
+      "usage": {
+        "prompt_tokens": 39742,
+        "completion_tokens": 1552,
+        "total_tokens": 41294,
+        "completion_tokens_details": {
+          "reasoning_tokens": 1408
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 2,
+      "arm": "A",
+      "ordinal": 4,
+      "payloadSha256": "63d07096b7f09893e02e7b8d5813f9bdba9f37188d1699c239a1355b96362df7",
+      "usage": {
+        "prompt_tokens": 42343,
+        "completion_tokens": 7327,
+        "total_tokens": 49670,
+        "completion_tokens_details": {
+          "reasoning_tokens": 7059
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 2,
+      "arm": "A",
+      "ordinal": 5,
+      "payloadSha256": "c3b7a6715a125015533b9799e2948a4732c7ca3bca17b75b4799ad203b80cadb",
+      "usage": {
+        "prompt_tokens": 52247,
+        "completion_tokens": 8747,
+        "total_tokens": 60994,
+        "completion_tokens_details": {
+          "reasoning_tokens": 6869
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 2,
+      "arm": "A",
+      "ordinal": 6,
+      "payloadSha256": "76df82a380bb1492dde7df7832b9b877cf3e6ae6c6f048694f04bab6718de9dd",
+      "usage": {
+        "prompt_tokens": 58738,
+        "completion_tokens": 561,
+        "total_tokens": 59299,
+        "completion_tokens_details": {
+          "reasoning_tokens": 207
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 2,
+      "arm": "A",
+      "ordinal": 7,
+      "payloadSha256": "44ef0db94d63d3115fc0792b6ec58d67b9a6ea8db04908a15488dbae3df26a22",
+      "usage": {
+        "prompt_tokens": 59330,
+        "completion_tokens": 866,
+        "total_tokens": 60196,
+        "completion_tokens_details": {
+          "reasoning_tokens": 581
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    },
+    {
+      "pair": 2,
+      "arm": "A",
+      "ordinal": 8,
+      "payloadSha256": "374d38a7499cee349cae5544281f28d588c6460a208fa06f8ecb2935b9ce470a",
+      "usage": {
+        "prompt_tokens": 60235,
+        "completion_tokens": 333,
+        "total_tokens": 60568,
+        "completion_tokens_details": {
+          "reasoning_tokens": 183
+        }
+      },
+      "source": "Actual localhost provider usage; checked against saved raw SSE before projection"
+    }
+  ],
+  "reasoning": "Subset of completion_tokens; do not add again",
+  "rawEvidence": "Private archived SSE; extracted counters support offline arithmetic, not independent grading replay"
+}

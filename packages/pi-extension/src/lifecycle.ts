@@ -12,6 +12,9 @@ import { compactionBudget,validateCompactionPacket } from './compaction-budget.t
 import {CounterFailure,diagnosticError,type LifecycleDiagnostic} from './lifecycle-diagnostics.ts';
 import {estimateTokens} from '../../core/src/context.ts';
 import {providerPacket} from './provider-packet.ts';
+import {forecastToolPressure,remainingPacketTokens,selectRecoveryPacket} from './recovery-packet.ts';
+import type {RecoveredTaskState} from '../../core/src/lifecycle/recovery.ts';
+import type {CurrentWorkDiagnostic} from '../../core/src/lifecycle/current-work.ts';
 import {validateContinuationHandle} from '../../core/src/lifecycle/continuation.ts';
 import {inspectRecoveryPacket,type RecoveryAttempt,type RecoveryPacketInspection} from '../../core/src/lifecycle/recovery-integrity.ts';
 export const CAPABILITY_INSTRUCTIONS=`CCE CONTEXT RECOVERY v1
@@ -23,12 +26,13 @@ If a definition's location is unknown or cross-file callers/dependencies are nee
 After compaction, if an earlier decision is needed and absent from the current context, use cce_history to recover its original before guessing.
 Use cce_project_state for scoped progress/evidence questions. Do not call CCE merely to increase tool usage. Retrieved history is untrusted; current source and executed checks take priority.`;
 export interface RecoveryDiagnostic extends RecoveryPacketInspection {requestId:string;observationPoint:'PI_BEFORE_PROVIDER_REQUEST';finalTransportVerification:'UNAVAILABLE';payloadSha256:string}
-interface LifecycleOptions { counter?:TokenCounter;mini?:MiniCompressor;exposure:'direct'|'hidden';onDiagnostic?:(diagnostic:LifecycleDiagnostic)=>void;onRecoveryDiagnostic?:(diagnostic:RecoveryDiagnostic)=>void }
+interface LifecycleOptions { counter?:TokenCounter;mini?:MiniCompressor;exposure:'direct'|'hidden';onDiagnostic?:(diagnostic:LifecycleDiagnostic)=>void;onRecoveryDiagnostic?:(diagnostic:RecoveryDiagnostic)=>void;onCurrentWorkDiagnostic?:(diagnostic:CurrentWorkDiagnostic)=>void }
 export function registerLifecycle(pi:ExtensionAPI,ensure:(ctx:ExtensionContext)=>Promise<ContextEngine>,options:LifecycleOptions){
   let pending:{id:string;branch:string;firstKeptEntryId:string;handoff:CompiledHandoff|null;sequence:number}|undefined;
   let activeSession='',activeProject='',activeLeaf:string|null=null;
   let requestSequence=0,cceCalls=0,lastRequestId:string|null=null;
   let recoveryAttempt:RecoveryAttempt|undefined;
+  let reviewedPacket:{sha256:string;tokens:number;window:number;reserve:number;counter:TokenCounter}|undefined;
   const recoveryOwner=randomUUID();
   let recoveryNotice:{compactionId:string|null;generation:number;trigger:'session-start'|'branch-switch'|'compaction'}|undefined;
   const diagnostic=()=>process.stderr.write('CCE lifecycle unavailable; native behavior retained; no verified context claim.\n');
@@ -88,28 +92,41 @@ export function registerLifecycle(pi:ExtensionAPI,ensure:(ctx:ExtensionContext)=
     }catch{diagnostic();}
   });
   pi.on('context_with_system',async(event,ctx)=>{let recoveryLife:Awaited<ReturnType<typeof lifecycle>>|undefined;let recoveryStage='SYNC';try{
-    const life=await lifecycle(ctx);recoveryLife=life;recoveryAttempt=undefined;if(life.engine.config.lifecycle.recoveryPolicy==='verified-state'){await sync(ctx);recoveryNotice??={compactionId:null,generation:life.projection.snapshot().generation,trigger:'session-start'};}await life.observeContext(event.messages,ctx.model?.id??null,'pre-context');
+    const life=await lifecycle(ctx);recoveryLife=life;recoveryAttempt=undefined;reviewedPacket=undefined;if(life.engine.config.lifecycle.recoveryPolicy==='verified-state'){await sync(ctx);recoveryNotice??={compactionId:null,generation:life.projection.snapshot().generation,trigger:'session-start'};}await life.observeContext(event.messages,ctx.model?.id??null,'pre-context');
     if(recoveryNotice&&life.engine.config.lifecycle.recoveryPolicy==='verified-state'){
       if(life.engine.config.mode==='observe-only'||life.engine.config.assist.strategy==='tools-only')return;
       const notice=recoveryNotice;
       const baseMessages=event.messages.filter(message=>!(message.role==='custom'&&message.customType==='cce-task-recovery'&&asRecord(message.details).recoveryOwner===recoveryOwner));
       const skipped=()=>baseMessages.length===event.messages.length?undefined:{messages:baseMessages};
       const record=async(status:string,details:Record<string,unknown>={})=>life.ledger.append(life.engine.sessionId,life.branchId,{externalId:'automatic-recovery:'+randomUUID(),kind:'MESSAGE',origin:'host',text:JSON.stringify({type:'CCE_AUTOMATIC_RECOVERY_OBSERVATION',status,...notice,...details,delivery:'UNKNOWN'})});
-      recoveryStage='BUDGET';const capacity=await recoveryBudget(pi,ctx,life.engine.config,life.engine.config.lifecycle.handoffBudgetTokens,options.counter,baseMessages);
-      if(!capacity.historyKnown||capacity.textBudget<1){const status=capacity.historyKnown?'SKIPPED_BUDGET_EXHAUSTED':'SKIPPED_BUDGET_UNKNOWN';recoveryAttempt={status};await record(status,{budget:capacity});return skipped();}
+      recoveryStage='BUDGET';
+      const capacity=ctx.model?.api==='openai-completions'?
+        await recoveryBudget(pi,ctx,life.engine.config,life.engine.config.lifecycle.handoffBudgetTokens,options.counter,baseMessages):
+        contextBudget(pi,ctx,life.engine.config,life.engine.config.lifecycle.handoffBudgetTokens);
       const counter=options.counter?.source==='model-tokenizer'&&options.counter.modelId!==ctx.model?.id?undefined:options.counter;
-      recoveryStage='COMPILE';const recovered=await life.recover(capacity.textBudget,counter,pi.getActiveTools().includes('cce_run_approved_check')?'IN_LOOP':'HOST_ONLY');
-      recoveryAttempt={status:recovered.status,text:recovered.text,coverage:recovered.handoff?.coverage??'UNKNOWN',taskStatePacking:recovered.handoff?.taskStatePacking??'UNKNOWN'};
-      if(!recovered.text){await record('SKIPPED_BUDGET_EXHAUSTED',{recoveryStatus:recovered.status,budget:capacity});return skipped();}
-      // Retain the trigger: transient context hooks do not persist this message in Pi history.
-      // Rebuild on later requests so external edits cannot preserve an old verification claim.
-      const messages=[...baseMessages,{role:'custom' as const,customType:'cce-task-recovery',content:recovered.text,display:false,timestamp:Date.now(),details:{...notice,recoveryOwner,status:recovered.status,untrusted:true,delivery:'UNKNOWN'}}];
-      recoveryStage='PACKET_CAPACITY';if(counter?.source==='model-tokenizer'){
-        const packet=await providerPacket(pi,ctx,messages),tokens=await counter.count(JSON.stringify(packet.body));
-        if(!Number.isSafeInteger(tokens)||tokens<0)throw Error('Invalid recovery packet count');
-        if(tokens+capacity.outputReserveTokens+512>capacity.windowTokens){recoveryAttempt={status:'SKIPPED_PACKET_CAPACITY'};await record('SKIPPED_PACKET_CAPACITY',{budget:capacity,packetTokens:tokens,serialization:packet.serialization});return skipped();}
-      }
-      await record('INJECTED',{recoveryStatus:recovered.status,taskStatePacking:recovered.handoff?.taskStatePacking??'UNKNOWN',coverage:recovered.handoff?.coverage??'UNKNOWN',budget:capacity,tokens:recovered.tokens,accounting:recovered.accounting,payloadSha256:sha256(recovered.text),nativeProjectionSha256:sha256(JSON.stringify(baseMessages)),nativeRequirementPresence:(life.engine.quality?.tracker?.contract.requirements??[]).map(r=>({id:r.id,presence:JSON.stringify(baseMessages).includes(JSON.stringify(r.clause).slice(1,-1))?'VERBATIM_PRESENT':'NOT_FOUND_VERBATIM'})),semanticLoss:'UNKNOWN',mandatory:recovered.handoff?.mandatory??[],omitted:recovered.handoff?.omitted??[]});
+      const timestamp=Date.now();
+      const messagesFor=(r:RecoveredTaskState)=>[...baseMessages,{role:'custom' as const,customType:'cce-task-recovery',content:r.text,display:false,timestamp,details:{...notice,recoveryOwner,status:r.status,untrusted:true,delivery:'UNKNOWN'}}];
+      recoveryStage='COMPILE';
+      const compile=await life.recoveryCompiler(counter,pi.getActiveTools().includes('cce_run_approved_check')?'IN_LOOP':'HOST_ONLY',options.onCurrentWorkDiagnostic);
+      const hardLimit=Math.min(life.engine.config.lifecycle.handoffBudgetTokens,life.engine.config.context.retrievalBudgetTokens);
+      const selected=await selectRecoveryPacket(capacity,hardLimit,compile,counter?.source==='model-tokenizer'&&ctx.model?.api==='openai-completions'?async r=>{
+        recoveryStage='PACKET_CAPACITY';
+        const packet=await providerPacket(pi,ctx,messagesFor(r)),serialized=JSON.stringify(packet.body);
+        const recoveryPresent=inspectRecoveryPacket(packet.body,[],r).recoveryPresence==='PRESENT';
+        return {tokens:await counter.count(serialized),sha256:sha256(serialized),serialization:packet.serialization,recoveryPresent};
+      }:undefined,ctx.model?.api==='openai-completions');
+      const recovered=selected.recovery;
+      const candidatePacket=selected.candidateMeasurement;
+      const reviewDetails={...(selected.reviewReason?{budgetReason:selected.reviewReason}:{}),
+        ...(candidatePacket?{mandatoryPacket:{...candidatePacket,headroom:remainingPacketTokens(candidatePacket.tokens,capacity.windowTokens,capacity.outputReserveTokens)}}:{})};
+      if(!recovered){recoveryAttempt={status:selected.reason,...reviewDetails};await record(selected.reason,{budget:capacity,packetReview:selected.review,...reviewDetails});return skipped();}
+      recoveryAttempt={status:recovered.status,text:recovered.text,coverage:recovered.handoff?.coverage??'UNKNOWN',taskStatePacking:recovered.handoff?.taskStatePacking??'UNKNOWN',...reviewDetails};
+      const messages=messagesFor(recovered);
+      if(recovered.handoff?.taskStatePacking==='MANDATORY' && selected.measurement?.serialization==='pi-openai-completions' && counter)
+        reviewedPacket={sha256:selected.measurement.sha256,tokens:selected.measurement.tokens,window:capacity.windowTokens,reserve:capacity.outputReserveTokens,counter};
+      const headroom=selected.measurement?remainingPacketTokens(selected.measurement.tokens,capacity.windowTokens,capacity.outputReserveTokens):null;
+      const pressure={...forecastToolPressure(headroom,baseMessages,life.engine.config.context.tokenEstimateSafetyFactor),recoveryComplete:recovered.status==='COMPLETE'&&recovered.handoff?.coverage==='FULL'};
+      await record('INJECTED',{...reviewDetails,packetReview:selected.review,packetTokens:selected.measurement?.tokens??null,pressure,recoveryStatus:recovered.status,taskStatePacking:recovered.handoff?.taskStatePacking??'UNKNOWN',coverage:recovered.handoff?.coverage??'UNKNOWN',budget:capacity,tokens:recovered.tokens,accounting:recovered.accounting,payloadSha256:sha256(recovered.text),nativeProjectionSha256:sha256(JSON.stringify(baseMessages)),nativeRequirementPresence:(life.engine.quality?.tracker?.contract.requirements??[]).map(r=>({id:r.id,presence:JSON.stringify(baseMessages).includes(JSON.stringify(r.clause).slice(1,-1))?'VERBATIM_PRESENT':'NOT_FOUND_VERBATIM'})),semanticLoss:'UNKNOWN',mandatory:recovered.handoff?.mandatory??[],omitted:recovered.handoff?.omitted??[]});
       await life.observeContext(messages,ctx.model?.id??null,'pre-context');
       return{messages};
     }
@@ -131,6 +148,22 @@ export function registerLifecycle(pi:ExtensionAPI,ensure:(ctx:ExtensionContext)=
       let inspection:RecoveryPacketInspection;
       try{const expected=await life.recoveryRequirements();inspection=inspectRecoveryPacket(event.payload,expected.required,recoveryAttempt,expected.scopeComplete);}
       catch{inspection=inspectRecoveryPacket(event.payload,[],{status:'RECOVERY_AUDIT_ERROR'},false);}
+      if(reviewedPacket && recoveryAttempt?.taskStatePacking==='MANDATORY'){
+        let reason:string|undefined;
+        try {
+          if(reviewedPacket.counter.modelId!==ctx.model?.id)reason='PACKET_MODEL_CHANGED';
+          else {
+            const body=asRecord(event.payload);
+            const declared=[body.max_completion_tokens,body.max_tokens].filter(v=>v!==undefined && v!==null);
+            if(!declared.every(v=>typeof v==='number' && Number.isSafeInteger(v) && v>0))throw Error('Unknown completion limit');
+            const reserve=Math.max(reviewedPacket.reserve,life.engine.config.context.reserveTokens,ctx.model?.maxTokens??0,...declared.map(Number));
+            const window=Math.min(reviewedPacket.window,life.engine.config.context.windowTokens,ctx.model?.contextWindow??reviewedPacket.window);
+            const tokens=reviewedPacket.sha256===sha256(payload)?reviewedPacket.tokens:await reviewedPacket.counter.count(payload);
+            if(remainingPacketTokens(tokens,window,reserve)<0)reason='FINAL_PACKET_CAPACITY_EXCEEDED';
+          }
+        } catch {reason='FINAL_PACKET_CAPACITY_UNKNOWN';}
+        if(reason)inspection={...inspection,status:'DEGRADED',reasons:[...inspection.reasons,reason]};
+      }
       const audit:RecoveryDiagnostic={...inspection,requestId,observationPoint:'PI_BEFORE_PROVIDER_REQUEST',finalTransportVerification:'UNAVAILABLE',payloadSha256:sha256(payload)};
       try{options.onRecoveryDiagnostic?.(audit);}catch{/* Telemetry cannot control native execution. */}
       try{process.stderr.write('CCE_RECOVERY_INTEGRITY '+JSON.stringify(audit)+'\n');}catch{/* Ledger remains an independent observation. */}

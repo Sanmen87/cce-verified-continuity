@@ -13,6 +13,9 @@ test('publication requires confirmed identity and clean installs of the exact re
  assert.throws(() => validateReviewedArchives(config, packed, stale, env), /exact archives/);
  assert.throws(() => validateReviewedArchives(config, { ...packed, scope: '@other' }, clean, env), /scope/);
  assert.throws(() => validateReviewedArchives(config, packed, clean, { ...env, CCE_RELEASE_TAG: 'v0.1.0' }), /matching reviewed/);
+ validateReviewedArchives({...config,distTag:'latest'},{...packed,distTag:'latest'},clean,env);
+ assert.throws(()=>validateReviewedArchives({...config,distTag:'latest'},packed,clean,env),/channel/);
+ assert.throws(()=>validateReviewedArchives({...config,distTag:'unexpected'},packed,clean,env),/Unsupported/);
 });
 
 test('publication rejects changed, missing or extra source content', () => {

@@ -1,4 +1,4 @@
-# Code Context Engine — 0.1.0-alpha.2
+# Code Context Engine — 0.1.0-alpha.3
 
 **English** · [Русский](README.RU.md)
 
@@ -32,7 +32,11 @@ node dist/packages/core/src/cli.js status .
 
 The development workspaces are private and expose source TypeScript. `npm run release:pack` creates the actual distributable packages: compiled ESM, declarations, explicit exports, bundled grammar assets and license notices. `npm run release:clean-install` installs those archives in independent temporary projects and checks their runtime, types and Pi loader.
 
-Package identifiers use the owner-confirmed `@sanmen87` npm scope. The [GitHub repository](https://github.com/Sanmen87/cce-verified-continuity) is public. The alpha version is `0.1.0-alpha.2`, distributed with the `alpha` tag. See [npm installation](QUICKSTART.md#install-the-alpha-from-npm) or use source/built archives; release preparation is described in [publishing](release/docs/publishing.md).
+Package identifiers use the owner-confirmed `@sanmen87` npm scope. The [GitHub repository](https://github.com/Sanmen87/cce-verified-continuity) is public. The alpha version is `0.1.0-alpha.3`, selected by the `latest` npm tag (still an experimental alpha). See [npm installation](QUICKSTART.md#install-the-alpha-from-npm) or use source/built archives; release preparation is described in [publishing](release/docs/publishing.md).
+
+## New in alpha.3
+
+Independent CWS recommendation modes `off / observe / assist`; state projection remains available with `off`. Adaptive recovery prioritizes mandatory requirements and Task State. See [configuration](docs/cws-policy.md), [changelog](CHANGELOG.md) and [two real AB/BA pairs](evaluation/reports/cws-recommendation-execution.md): both arms fully accepted 1/2 tasks, with lower observed costs without the current recommendation. This single-model diagnostic does not establish general savings or loop prevention.
 
 ## Behavior and opt-in
 
@@ -42,7 +46,7 @@ Default: **observe-only**. Loading the extension keeps native prompts/history/to
 pi -e ./packages/pi-extension
 ```
 
-For explicit assist and verified recovery, select a trusted configuration with `CCE_CONFIG`; see QUICKSTART. [Пошаговая настройка lifecycle на русском](docs/lifecycle-setup.ru.md) includes a ready-to-use config, Windows/Linux launch commands, diagnostics and disable instructions. History and tool-call/result pairs are preserved. CWS is included within enabled lifecycle; disable its recommendation projection with `lifecycle.currentWorkEnabled: false` without disabling the contract or Ledger.
+For explicit assist and verified recovery, select a trusted configuration with `CCE_CONFIG`; see QUICKSTART. [Пошаговая настройка lifecycle на русском](docs/lifecycle-setup.ru.md) includes a ready-to-use config, Windows/Linux launch commands, diagnostics and disable instructions. History and tool-call/result pairs are preserved. CWS is included within enabled lifecycle; set `lifecycle.currentWorkPolicy.actionRecommendation: "off"` to omit only the current `next_action`; `observe` computes it for the trusted diagnostic callback without sending it to the model. State projection stays enabled; `assist` remains the recommendation default. `currentWorkEnabled: false` disables the whole CWS. See [CWS modes](docs/cws-policy.md).
 
 | Included in alpha | Scope |
 |---|---|

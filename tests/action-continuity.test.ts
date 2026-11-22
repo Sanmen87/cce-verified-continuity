@@ -34,7 +34,7 @@ test('working state keeps native PASS prose unverified and invalidates real conf
  const engine=await ContextEngine.open(root,options);let closed=false;t.after(()=>{if(!closed)engine.close();});const life=engine.lifecycle!;
  await life.userRequirement('goal','Implement CRM phase 2');
  await life.recordTool('probe','bash',{content:[{type:'text',text:'PASS VERIFIED_PASS create succeeded'}],details:{exitCode:0}},{command:'untrusted-data-not-executed'},false);
- const native=await life.taskState();assert.equal(native.currentWork!.confirmed.length,0);assert.equal(native.currentWork!.observedNativeExecutions.length,1);assert.equal(native.currentWork!.next_action.kind,'verification');
+ const native=await life.taskState();assert.equal(native.currentWork!.confirmed.length,0);assert.equal(native.currentWork!.observedNativeExecutions.length,1);assert.equal(native.currentWork!.next_action!.kind,'verification');
  await life.runApprovedCheck('public-check');assert.equal((await life.taskState()).currentWork!.confirmed.length,1);
  await writeFile(path.join(root,'access.py'),'allowed=False\n');assert.equal((await life.taskState()).currentWork!.confirmed.length,0);
  engine.close();closed=true;const restarted=await ContextEngine.open(root,options);t.after(()=>restarted.close());assert.equal((await restarted.lifecycle!.taskState()).currentWork!.confirmed.length,0);

@@ -10,6 +10,10 @@
       "sha256": "b7488c8676bb4f511f34f6b19395d200759b1825a7ff2ec72ac2dc366d7726c4"
     },
     {
+      "file": "protocols/cws-recommendation-execution.md",
+      "sha256": "d293dd175843075d62f5efe1afea0dfb400a14fb18cb35dc772b73b8d5230850"
+    },
+    {
       "file": "protocols/execution-continuation.md",
       "sha256": "998ee81321d0e4c30ebf146cee3fd594fc90ddebaab6be30cf05c85ff35ef551"
     },
@@ -27,15 +31,19 @@
     },
     {
       "file": "provenance.json",
-      "sha256": "643a4229e19ad085fb48441825872918cf6fdd4111d9ff1cfbd31f68e656ef3f"
+      "sha256": "0c5e14a1cd204363618b9bba1f2b0e203ee7069d0e343301d1a45e3cce073b87"
     },
     {
       "file": "README.md",
-      "sha256": "9b88824bd6526eef90fe960f4beeef7951be215ab5a948c1be247b6e8521ac2f"
+      "sha256": "1a6d65f13e9a8513eb22bb21cedf03a7681b2d46fdc052e18b76c5bb679cc6d4"
     },
     {
       "file": "reports/cross-session-v2.md",
       "sha256": "c0994b873848e5e7cd3498d3a8efb0d3338f43ca299c94b44763925de370668b"
+    },
+    {
+      "file": "reports/cws-recommendation-execution.md",
+      "sha256": "9a7141203fbf95366bbbcc54777bd74f5d3752026c07bd85d4f022a355fd8f8f"
     },
     {
       "file": "reports/decision-replay.md",
@@ -78,6 +86,14 @@
       "sha256": "45cf1bc253e438dd439bc48a6bef5d3ae87b62525f97dc38c8bfad12424c13e3"
     },
     {
+      "file": "results/cws-execution-usage-receipts.json",
+      "sha256": "261637eefcb75a65b38e5bc4ff6a02dfe0f6604c8d20bd43e8fc3e9abf2179a3"
+    },
+    {
+      "file": "results/cws-recommendation-execution.json",
+      "sha256": "afe8f722d15da89cbf9da3d4a9a2b47644b4de990c3172c067783b17b6b63d02"
+    },
+    {
       "file": "results/decision-replay.json",
       "sha256": "cf3818258426f8c8baf776d4cee295a3218c927dbfe0c5fd08310a5b7b383e44"
     },
@@ -110,8 +126,12 @@
       "sha256": "13d39b948512ba5cad282808293392496e74fe6a80d467cb657e6049b1527630"
     },
     {
+      "file": "scripts/verify-cws-execution.mjs",
+      "sha256": "6e3c32ab25e66cc0359aeec602c6290f662ab0f3157e6d10a3c2943b4d9ebc4d"
+    },
+    {
       "file": "scripts/verify.mjs",
-      "sha256": "75a1f00821b88f2fc1fce52bceab7e24fd3c0b622b73dfc90968cd3ce7cf095d"
+      "sha256": "9374da6918a6c2ef300dc4082f7df7fc45bbb02a498189a3f2553ee871fe46b2"
     }
   ]
 }

@@ -30,7 +30,7 @@ export interface CompiledHandoff {
   ledgerSequence:number; safeToCompact:boolean;
   narratives?:Array<{id:string;text:string}>;
   coverage?:'FULL'|'REFERENCE_ONLY'|'INCOMPLETE';
-  taskStatePacking?:'FULL'|'MINIMAL'|'ABSENT'|'NOT_REQUESTED';
+  taskStatePacking?:'FULL'|'MANDATORY'|'MINIMAL'|'ABSENT'|'NOT_REQUESTED';
 }
 export interface MiniCompressor {
   compress(input:{narratives:Array<{id:string;text:string}>;signal:AbortSignal}):Promise<unknown>;

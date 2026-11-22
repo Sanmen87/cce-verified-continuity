@@ -698,6 +698,49 @@
       "sha256": "cbc1c59f92d762939c6b98918ef59d08a74baad2de27ac5ab0af329eeb2f64e2",
       "bytes": 8174,
       "visibility": "SANITIZED_DERIVED_REPORT"
+    },
+    {
+      "id": "alpha3-execution-summary",
+      "original": "benchmarks/quality/integrity-native/recovery-execution-results.json",
+      "sha256": "f198579b3c2d8c77c23c8d371169d20b873aa137cbe064702066fc64576cf34c",
+      "bytes": 40094,
+      "visibility": "PRIVATE_ORIGINAL_HASH_ONLY"
+    },
+    {
+      "id": "alpha3-execution-1A",
+      "original": ".bench/recovery-execution-A/runs/2026-11-22T16-43-31-359Z-f47a2265/broker-receipt.json",
+      "sha256": "96f8673d1d4c5001986cdff27380fbda969102a33c806d943a434c201e3a9640",
+      "bytes": 31933,
+      "visibility": "PRIVATE_ORIGINAL_HASH_ONLY"
+    },
+    {
+      "id": "alpha3-execution-1B",
+      "original": ".bench/recovery-execution-B/runs/2026-11-22T17-26-37-887Z-92989dca/broker-receipt.json",
+      "sha256": "e344c2c7b6b308bbaab24481618a5f6dcd5896dac5b034b90d5a5f88d3853037",
+      "bytes": 31923,
+      "visibility": "PRIVATE_ORIGINAL_HASH_ONLY"
+    },
+    {
+      "id": "alpha3-execution-2B",
+      "original": ".bench/recovery-execution-B/runs/2026-11-22T18-06-51-302Z-f04769ec/broker-receipt.json",
+      "sha256": "30600830ea873e152d6cb42f6d2626f121688587f3fd9dfb2f26c9ab45bb3e8d",
+      "bytes": 31922,
+      "visibility": "PRIVATE_ORIGINAL_HASH_ONLY"
+    },
+    {
+      "id": "alpha3-execution-2A",
+      "original": ".bench/recovery-execution-A/runs/2026-11-22T18-41-30-155Z-a1fac10b/broker-receipt.json",
+      "sha256": "93f4d8391f01e37d9e2993a39806dbd0a4ac9226aed4ca2c9dd58c86b3d12c6a",
+      "bytes": 36322,
+      "visibility": "PRIVATE_ORIGINAL_HASH_ONLY"
+    }
+  ],
+  "additions": [
+    {
+      "date": "2026-11-22",
+      "series": "CWS recommendation execution AB/BA",
+      "historicalRecordsUnchanged": true,
+      "providerUsageReceipts": 32
     }
   ]
 }

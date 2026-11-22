@@ -1,6 +1,11 @@
+export interface CurrentWorkPolicy {
+  stateProjection:true;
+  actionRecommendation:'off'|'observe'|'assist';
+}
 export interface CceConfig {
   lifecycle: {
     enabled:boolean; ledgerEnabled:boolean; projectionEnabled:boolean; historyRecallEnabled:boolean; capabilityContractEnabled:boolean; currentWorkEnabled:boolean;
+    currentWorkPolicy:CurrentWorkPolicy;
     compactionMode:'native'|'observe'|'deterministic'|'hybrid-mini-llm'; handoffBudgetTokens:number; recoveryReserveTokens:number;
     recoveryPolicy:'legacy'|'explicit'|'explicit-hint'|'verified-state';
     sufficiencyMode:'observe'|'assist'|'guarded'; externalizeToolOutputs:boolean; externalizeMinBytes:number;
@@ -37,6 +42,7 @@ export interface CceConfig {
 }
 export const defaults: CceConfig = {
   lifecycle:{enabled:false,ledgerEnabled:false,projectionEnabled:false,historyRecallEnabled:false,capabilityContractEnabled:false,currentWorkEnabled:true,
+    currentWorkPolicy:{stateProjection:true,actionRecommendation:'assist'},
     compactionMode:'native',handoffBudgetTokens:2048,recoveryReserveTokens:0,recoveryPolicy:'legacy',sufficiencyMode:'observe',externalizeToolOutputs:false,externalizeMinBytes:16384,
     maxBlobBytes:2097152,maxStoreBytes:67108864,retentionDays:30,miniLlm:{enabled:false,endpoint:'http://127.0.0.1:1234/v1',model:'',timeoutMs:10000}},
   quality: { profile: 'legacy-v04', guardEnabled: false, coverageEnabled: false,packing:'legacy',selection:'legacy' },
@@ -92,6 +98,7 @@ function mergeKnown(base: Record<string, unknown>, patch: Record<string, unknown
 export function parseConfig(input: unknown = {}): CceConfig {
   const c = mergeKnown(object(structuredClone(defaults)), object(input)) as unknown as CceConfig;
   const life=c.lifecycle;
+  if(life.currentWorkPolicy.stateProjection!==true||!['off','observe','assist'].includes(life.currentWorkPolicy.actionRecommendation))throw Error('Invalid current work policy');
   if(!['native','observe','deterministic','hybrid-mini-llm'].includes(life.compactionMode)||!['observe','assist','guarded'].includes(life.sufficiencyMode))throw Error('Invalid lifecycle mode');
   if(!['legacy','explicit','explicit-hint','verified-state'].includes(life.recoveryPolicy))throw Error('Invalid recovery policy');
   integer(life.handoffBudgetTokens,1,65536);integer(life.recoveryReserveTokens,0,65536);integer(life.maxBlobBytes,1024,16777216);integer(life.maxStoreBytes,life.maxBlobBytes,1073741824);integer(life.retentionDays,1,3650);integer(life.externalizeMinBytes,1024,16777216);integer(life.miniLlm.timeoutMs,1,120000);

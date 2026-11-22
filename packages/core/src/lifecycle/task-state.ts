@@ -1,11 +1,11 @@
 import { containsSecret } from '../native/secrets.ts';
 import type { ContextLifecycle } from './service.ts';
 import { contractRevisions } from './task-contract.ts';
-import { currentWork } from './current-work.ts';
+import { presentCurrentWork,type CurrentWorkDiagnostic } from './current-work.ts';
 import { observeExecution } from '../quality/execution.ts';
 
 /** A projection of scoped observations, not a generated summary or a completion verdict. */
-export async function projectTaskState(life: ContextLifecycle, verificationAccess?:'IN_LOOP'|'HOST_ONLY') {
+export async function projectTaskState(life: ContextLifecycle, verificationAccess?:'IN_LOOP'|'HOST_ONLY',onCurrentWorkDiagnostic?:(view:CurrentWorkDiagnostic)=>void) {
   const { engine, ledger, branchId } = life, session = engine.sessionId;
   const revisions = await contractRevisions(ledger, session, branchId), active = revisions.at(-1);
   const window=ledger.currentFacts(session,branchId),facts = window.events, superseded = new Set(facts.filter(e => ['user','host'].includes(e.origin)).flatMap(e => e.supersedes ? [e.supersedes] : []));
@@ -99,5 +99,5 @@ export async function projectTaskState(life: ContextLifecycle, verificationAcces
   };
   const latestUser=current.filter(e=>e.origin==='user'&&['USER_GOAL','USER_REQUIREMENT'].includes(e.kind)).at(-1);
   const objective=latestUser?{...(await text(latestUser.id)),eventId:latestUser.id}:null;
-  return{...state,...(engine.config.lifecycle.currentWorkEnabled?{currentWork:currentWork({...state,nativeObservations:nativeObservations.slice(-4)},objective)}:{})};
+  return{...state,...(engine.config.lifecycle.currentWorkEnabled?{currentWork:presentCurrentWork({...state,nativeObservations:nativeObservations.slice(-4)},objective,engine.config.lifecycle.currentWorkPolicy,view=>onCurrentWorkDiagnostic?.({...view,scope:{projectId:engine.workspace.projectId,sessionId:session,branchId,throughSequence:state.throughSequence}}))}:{})};
 }

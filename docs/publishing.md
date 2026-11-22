@@ -1,5 +1,11 @@
 # Publishing an alpha
 
+## Current channel policy — alpha.3
+
+The owner explicitly selected **latest** for `0.1.0-alpha.3`. `release/config.json` records `distTag: "latest"`; package manifests, the publisher and archive review gate must agree. Publish reviewed immutable archives with this explicit tag. Earlier alpha versions remain unchanged; `@alpha` may continue to reference the earlier alpha until separately promoted. Exact-version installation is recommended for reproducibility. npm latest is a distribution channel, not a stability guarantee: this release is still experimental.
+
+The owner also requested the current release as GitHub Latest. GitHub does not allow its prerelease flag together with Latest, so `githubLatest: true` selects a normal GitHub release marked **experimental alpha** in its title/body and alpha semver tag. This UI flag does not change the project's alpha support or evidence claims. The remaining text includes historical bootstrap policy; use the current version/channel configuration for a new release.
+
 The repository and npm scope belong to the publisher's chosen identities: `Sanmen87/cce-verified-continuity` and the owner-confirmed npm username/scope `sanmen87` / `@sanmen87`. No automated command in this checkout publishes by default. Identity confirmation is separate from npm authentication and publication approval.
 
 The owner selected `Sanmen87/cce-verified-continuity`; a private preparation repository was created on 2026-11-19 (Europe/Moscow), then made public on the owner's explicit request after Windows/Linux CI passed. GitHub Release and npm publication are still separate steps. A repository name is scoped to its GitHub owner; existing repositories named CCE elsewhere do not reserve this owner's path. This is not trademark clearance.
